@@ -299,7 +299,7 @@
 
   <!-- ADD / EDIT PRODUCT MODAL -->
   <div class="modal-overlay" id="productModal">
-    <div class="modal-container">
+    <form id="productForm" class="modal-container" style="margin: 0;">
       <div class="modal-header">
         <h3 id="modalProductTitle">Thêm Sản Phẩm Mới</h3>
         <span class="modal-close" id="btnCloseProductModal">
@@ -311,94 +311,92 @@
       </div>
       
       <div class="modal-body">
-        <form id="productForm">
-          <input type="hidden" id="editProductId">
+        <input type="hidden" id="editProductId">
+        
+        <div class="form-group">
+          <label for="prodName">Tên sản phẩm *</label>
+          <input type="text" id="prodName" class="form-control" placeholder="Ví dụ: Jacket Da Lộn Cổ Bẻ" required>
+        </div>
+
+        <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+          <div class="form-group">
+            <label for="prodCategory">Phân loại *</label>
+            <select id="prodCategory" class="form-control" required style="background: var(--bg-tertiary);">
+              <option value="Outerwear">Áo khoác (Outerwear)</option>
+              <option value="Trousers">Quần (Trousers)</option>
+              <option value="Streetwear">Thời trang dạo phố (Streetwear)</option>
+              <option value="Footwear">Giày dép (Footwear)</option>
+              <option value="Accessories">Phụ kiện (Accessories)</option>
+            </select>
+          </div>
           
           <div class="form-group">
-            <label for="prodName">Tên sản phẩm *</label>
-            <input type="text" id="prodName" class="form-control" placeholder="Ví dụ: Jacket Da Lộn Cổ Bẻ" required>
-          </div>
-
-          <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
-            <div class="form-group">
-              <label for="prodCategory">Phân loại *</label>
-              <select id="prodCategory" class="form-control" required style="background: var(--bg-tertiary);">
-                <option value="Outerwear">Áo khoác (Outerwear)</option>
-                <option value="Trousers">Quần (Trousers)</option>
-                <option value="Streetwear">Thời trang dạo phố (Streetwear)</option>
-                <option value="Footwear">Giày dép (Footwear)</option>
-                <option value="Accessories">Phụ kiện (Accessories)</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="prodPrice">Giá bán lẻ ($) *</label>
-              <input type="number" step="0.01" id="prodPrice" class="form-control" placeholder="Ví dụ: 129.99" required min="0">
-            </div>
-
-            <div class="form-group">
-              <label for="prodComboPrice">Giá Combo (từ 2 cái) ($) *</label>
-              <input type="number" step="0.01" id="prodComboPrice" class="form-control" placeholder="Ví dụ: 99.99" required min="0">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="prodStock">Tổng số tồn kho (Tự động tính)</label>
-              <input type="number" id="prodStock" class="form-control" readonly style="background: rgba(0,0,0,0.05); cursor: not-allowed;" placeholder="0">
-            </div>
-            
-            <!-- Color Selection Group -->
-            <div class="form-group colors-selector-container">
-              <label>Màu sắc chi tiết</label>
-              <div class="color-input-group" style="display: flex; gap: 10px; align-items: center;">
-                <input type="text" id="prodColorInput" class="form-control" placeholder="Ví dụ: Đen, Xanh Navy, Trắng" style="flex: 1;">
-                <button type="button" class="btn btn-secondary" id="btnAddColor" style="padding: 10px 16px; white-space: nowrap;">
-                  Thêm màu
-                </button>
-              </div>
-              <div class="color-tags-list" id="colorTagsList">
-                <!-- Color tag items are populated dynamically -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Dynamic Sizes & Stock Config by Color -->
-          <div class="form-group" style="margin-top: 24px;">
-            <label style="font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; color: var(--text-secondary);">Cấu hình số lượng chi tiết theo màu & size</label>
-            <div id="colorStockContainer" style="margin-top: 12px;">
-              <!-- Dynamically rendered color stock blocks -->
-            </div>
+            <label for="prodPrice">Giá bán lẻ ($) *</label>
+            <input type="number" step="0.01" id="prodPrice" class="form-control" placeholder="Ví dụ: 129.99" required min="0">
           </div>
 
           <div class="form-group">
-            <label for="prodDesc">Mô tả sản phẩm</label>
-            <textarea id="prodDesc" class="form-control" rows="4" placeholder="Nhập mô tả chi tiết của sản phẩm..."></textarea>
+            <label for="prodComboPrice">Giá Combo (từ 2 cái) ($) *</label>
+            <input type="number" step="0.01" id="prodComboPrice" class="form-control" placeholder="Ví dụ: 99.99" required min="0">
           </div>
+        </div>
 
-          <!-- Upload Images -->
+        <div class="form-row">
           <div class="form-group">
-            <label>Ảnh sản phẩm (Có thể upload nhiều ảnh) *</label>
-            <div class="upload-dropzone" id="imageDropzone">
-              <!-- Cloud Upload Icon SVG -->
-              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-              </svg>
-              <p>Kéo thả ảnh vào đây hoặc click để <span>Tải lên từ máy</span></p>
-              <input type="file" id="imageFileInput" accept="image/*" multiple style="display: none;">
+            <label for="prodStock">Tổng số tồn kho (Tự động tính)</label>
+            <input type="number" id="prodStock" class="form-control" readonly style="background: rgba(0,0,0,0.05); cursor: not-allowed;" placeholder="0">
+          </div>
+          
+          <!-- Color Selection Group -->
+          <div class="form-group colors-selector-container">
+            <label>Màu sắc chi tiết</label>
+            <div class="color-input-group" style="display: flex; gap: 10px; align-items: center;">
+              <input type="text" id="prodColorInput" class="form-control" placeholder="Ví dụ: Đen, Xanh Navy, Trắng" style="flex: 1;">
+              <button type="button" class="btn btn-secondary" id="btnAddColor" style="padding: 10px 16px; white-space: nowrap;">
+                Thêm màu
+              </button>
             </div>
-            <div class="image-preview-grid" id="imagePreviewGrid">
-              <!-- Uploaded files previews are generated here -->
+            <div class="color-tags-list" id="colorTagsList">
+              <!-- Color tag items are populated dynamically -->
             </div>
           </div>
-        </form>
+        </div>
+
+        <!-- Dynamic Sizes & Stock Config by Color -->
+        <div class="form-group" style="margin-top: 24px;">
+          <label style="font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; color: var(--text-secondary);">Cấu hình số lượng chi tiết theo màu & size</label>
+          <div id="colorStockContainer" style="margin-top: 12px;">
+            <!-- Dynamically rendered color stock blocks -->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="prodDesc">Mô tả sản phẩm</label>
+          <textarea id="prodDesc" class="form-control" rows="4" placeholder="Nhập mô tả chi tiết của sản phẩm..."></textarea>
+        </div>
+
+        <!-- Upload Images -->
+        <div class="form-group">
+          <label>Ảnh sản phẩm (Có thể upload nhiều ảnh) *</label>
+          <div class="upload-dropzone" id="imageDropzone">
+            <!-- Cloud Upload Icon SVG -->
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            <p>Kéo thả ảnh vào đây hoặc click để <span>Tải lên từ máy</span></p>
+            <input type="file" id="imageFileInput" accept="image/*" multiple style="display: none;">
+          </div>
+          <div class="image-preview-grid" id="imagePreviewGrid">
+            <!-- Uploaded files previews are generated here -->
+          </div>
+        </div>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="btnCancelProductModal">Hủy</button>
-        <button type="submit" form="productForm" class="btn btn-primary" id="btnSaveProduct">Lưu Sản Phẩm</button>
+        <button type="submit" class="btn btn-primary" id="btnSaveProduct">Lưu Sản Phẩm</button>
       </div>
-    </div>
+    </form>
   </div>
 
   <!-- DELETE CONFIRMATION MODAL -->
@@ -425,7 +423,7 @@
 
   <!-- GOOGLE SHEETS SETTINGS MODAL -->
   <div class="modal-overlay" id="sheetSettingsModal">
-    <div class="modal-container" style="max-width: 500px;">
+    <form id="sheetSettingsForm" class="modal-container" style="max-width: 500px; margin: 0;">
       <div class="modal-header">
         <h3>Cấu Hình Google Sheets</h3>
         <span class="modal-close" id="btnCloseSheetSettingsModal">
@@ -436,35 +434,33 @@
         </span>
       </div>
       <div class="modal-body">
-        <form id="sheetSettingsForm">
-          <div class="form-group">
-            <label for="googleSheetUrl">Google Apps Script Web App URL</label>
-            <input type="url" id="googleSheetUrl" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
-            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.4;">
-              Nhập Web App URL từ Google Apps Script để gửi đơn hàng trực tiếp lên Google Sheets.
-            </p>
-          </div>
+        <div class="form-group">
+          <label for="googleSheetUrl">Google Apps Script Web App URL</label>
+          <input type="url" id="googleSheetUrl" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.4;">
+            Nhập Web App URL từ Google Apps Script để gửi đơn hàng trực tiếp lên Google Sheets.
+          </p>
+        </div>
+        
+        <div style="background-color: var(--bg-tertiary); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-top: 16px;">
+          <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--accent);">Hướng dẫn tạo Google Apps Script:</h4>
+          <ol style="font-size: 0.8rem; color: var(--text-secondary); padding-left: 16px; display: flex; flex-direction: column; gap: 6px;">
+            <li>Tạo một file Google Sheets mới.</li>
+            <li>Chọn <strong>Tiện ích mở rộng (Extensions)</strong> &gt; <strong>Apps Script</strong>.</li>
+            <li>Dán mã script xử lý (Click xem mã mẫu ở bên dưới).</li>
+            <li>Click <strong>Triển khai (Deploy)</strong> &gt; <strong>Triển khai mới (New deployment)</strong>.</li>
+            <li>Chọn loại là <strong>Ứng dụng web (Web app)</strong>. Ở phần "Ai có quyền truy cập" chọn <strong>Bất kỳ ai (Anyone)</strong>.</li>
+            <li>Sao chép URL ứng dụng web và dán vào ô trên đây.</li>
+          </ol>
           
-          <div style="background-color: var(--bg-tertiary); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-top: 16px;">
-            <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--accent);">Hướng dẫn tạo Google Apps Script:</h4>
-            <ol style="font-size: 0.8rem; color: var(--text-secondary); padding-left: 16px; display: flex; flex-direction: column; gap: 6px;">
-              <li>Tạo một file Google Sheets mới.</li>
-              <li>Chọn <strong>Tiện ích mở rộng (Extensions)</strong> &gt; <strong>Apps Script</strong>.</li>
-              <li>Dán mã script xử lý (Click xem mã mẫu ở bên dưới).</li>
-              <li>Click <strong>Triển khai (Deploy)</strong> &gt; <strong>Triển khai mới (New deployment)</strong>.</li>
-              <li>Chọn loại là <strong>Ứng dụng web (Web app)</strong>. Ở phần "Ai có quyền truy cập" chọn <strong>Bất kỳ ai (Anyone)</strong>.</li>
-              <li>Sao chép URL ứng dụng web và dán vào ô trên đây.</li>
-            </ol>
-            
-            <button type="button" id="btnShowScriptSample" style="margin-top: 12px; font-size: 0.8rem; color: var(--accent); cursor: pointer; text-decoration: underline; background: none; border: none; font-weight: 600; padding: 0;">Xem mã Apps Script mẫu</button>
-          </div>
-        </form>
+          <button type="button" id="btnShowScriptSample" style="margin-top: 12px; font-size: 0.8rem; color: var(--accent); cursor: pointer; text-decoration: underline; background: none; border: none; font-weight: 600; padding: 0;">Xem mã Apps Script mẫu</button>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="btnCancelSheetSettings">Hủy</button>
-        <button type="submit" form="sheetSettingsForm" class="btn btn-primary">Lưu Cấu Hình</button>
+        <button type="submit" class="btn btn-primary">Lưu Cấu Hình</button>
       </div>
-    </div>
+    </form>
   </div>
 
   <!-- SCRIPT SAMPLE MODAL -->

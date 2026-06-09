@@ -269,7 +269,7 @@
 
   <!-- CHECKOUT MODAL -->
   <div class="modal-overlay" id="checkoutModal">
-    <div class="modal-container" style="max-width: 500px;">
+    <form id="checkoutForm" class="modal-container" style="max-width: 500px; margin: 0;">
       <div class="modal-header">
         <h3 data-i18n="check_title">Thông Tin Giao Hàng</h3>
         <span class="modal-close" id="btnCloseCheckoutModal">
@@ -281,44 +281,42 @@
         </span>
       </div>
       <div class="modal-body">
-        <form id="checkoutForm">
-          <div class="form-group">
-            <label for="custName" data-i18n="check_name">Họ và Tên *</label>
-            <input type="text" id="custName" class="form-control" placeholder="Nhập họ và tên đầy đủ" required>
-          </div>
-          <div class="form-group">
-            <label for="custPhone" data-i18n="check_phone">Số Điện Thoại *</label>
-            <input type="tel" id="custPhone" class="form-control" placeholder="Nhập số điện thoại liên hệ" required
-              pattern="[0-9]{9,11}" title="Vui lòng nhập số điện thoại hợp lệ từ 9 đến 11 số">
-          </div>
-          <div class="form-group">
-            <label for="custAddress" data-i18n="check_address">Địa Chỉ Giao Hàng *</label>
-            <textarea id="custAddress" class="form-control" rows="3" placeholder="Nhập địa chỉ giao nhận chi tiết"
-              required></textarea>
-          </div>
+        <div class="form-group">
+          <label for="custName" data-i18n="check_name">Họ và Tên *</label>
+          <input type="text" id="custName" class="form-control" placeholder="Nhập họ và tên đầy đủ" required>
+        </div>
+        <div class="form-group">
+          <label for="custPhone" data-i18n="check_phone">Số Điện Thoại *</label>
+          <input type="tel" id="custPhone" class="form-control" placeholder="Nhập số điện thoại liên hệ" required
+            pattern="[0-9]{9,11}" title="Vui lòng nhập số điện thoại hợp lệ từ 9 đến 11 số">
+        </div>
+        <div class="form-group">
+          <label for="custAddress" data-i18n="check_address">Địa Chỉ Giao Hàng *</label>
+          <textarea id="custAddress" class="form-control" rows="3" placeholder="Nhập địa chỉ giao nhận chi tiết"
+            required></textarea>
+        </div>
 
-          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">
-              <span data-i18n="cart_subtotal">Tạm tính:</span>
-              <span id="checkoutSubtotal">$0.00</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">
-              <span data-i18n="cart_shipping">Phí vận chuyển:</span>
-              <span id="checkoutShipping">$0.00</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.15rem; color: var(--text-primary); border-top: 1px dashed var(--border-color); padding-top: 12px; margin-top: 12px; align-items: center;">
-              <span data-i18n="cart_total">Tổng thanh toán:</span>
-              <span class="text-gold" id="checkoutTotalAmount" style="font-size: 1.4rem; font-weight: 700; font-family: var(--font-heading);">$0.00</span>
-            </div>
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+            <span data-i18n="cart_subtotal">Tạm tính:</span>
+            <span id="checkoutSubtotal">$0.00</span>
           </div>
-        </form>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+            <span data-i18n="cart_shipping">Phí vận chuyển:</span>
+            <span id="checkoutShipping">$0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.15rem; color: var(--text-primary); border-top: 1px dashed var(--border-color); padding-top: 12px; margin-top: 12px; align-items: center;">
+            <span data-i18n="cart_total">Tổng thanh toán:</span>
+            <span class="text-gold" id="checkoutTotalAmount" style="font-size: 1.4rem; font-weight: 700; font-family: var(--font-heading);">$0.00</span>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="btnCancelCheckout" data-i18n="check_cancel">Hủy</button>
-        <button type="submit" form="checkoutForm" class="btn btn-primary" id="btnConfirmCheckout"
+        <button type="submit" class="btn btn-primary" id="btnConfirmCheckout"
           data-i18n="check_confirm">Xác Nhận Đặt Hàng</button>
       </div>
-    </div>
+    </form>
   </div>
 
   <!-- Storefooter -->
