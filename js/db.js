@@ -180,15 +180,22 @@ const dbCaches = {
 };
 
 if (window.firebaseEnabled) {
-  // 1. Seed Firestore with default products if empty
-  window.firebaseDb.collection('products').get().then(snapshot => {
-    if (snapshot.empty) {
-      console.log("🌱 Seeding Firestore with default products...");
-      DEFAULT_PRODUCTS.forEach(p => {
-        const pId = p.id;
-        const data = { ...p };
-        delete data.id;
-        window.firebaseDb.collection('products').doc(pId).set(data);
+  // 1. Seed Firestore with default products if empty and not seeded before
+  window.firebaseDb.collection('settings').doc('global').get().then(doc => {
+    const isSeeded = doc.exists && doc.data().seeded;
+    if (!isSeeded) {
+      window.firebaseDb.collection('products').get().then(snapshot => {
+        if (snapshot.empty) {
+          console.log("🌱 Seeding Firestore with default products...");
+          DEFAULT_PRODUCTS.forEach(p => {
+            const pId = p.id;
+            const data = { ...p };
+            delete data.id;
+            window.firebaseDb.collection('products').doc(pId).set(data);
+          });
+          // Mark as seeded
+          window.firebaseDb.collection('settings').doc('global').set({ seeded: true }, { merge: true });
+        }
       });
     }
   });
