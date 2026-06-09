@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | WEBE Premium Fashion</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background: radial-gradient(circle at 10% 20%, rgba(18, 18, 22, 1) 0%, rgba(10, 10, 12, 1) 90%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ambient glow elements */
+    .glow-sphere {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: var(--radius-full);
+      background: radial-gradient(circle, rgba(214, 175, 55, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+      top: -100px;
+      right: -100px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .glow-sphere-2 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: var(--radius-full);
+      background: radial-gradient(circle, rgba(214, 175, 55, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
+      bottom: -150px;
+      left: -150px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 440px;
+      padding: 16px;
+    }
+
+    .login-card {
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: linear-gradient(135deg, rgba(20, 20, 25, 0.8) 0%, rgba(14, 14, 18, 0.8) 100%);
+      box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .brand-logo {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .brand-logo h2 {
+      font-size: 2.2rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .brand-logo p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      transition: var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .input-with-icon {
+      padding-left: 48px !important;
+    }
+
+    .input-wrapper:focus-within i {
+      color: var(--accent);
+    }
+
+    .btn-login {
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      font-size: 1rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .back-to-store {
+      display: block;
+      text-align: center;
+      margin-top: 28px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: var(--transition-fast);
+      letter-spacing: 0.05em;
+    }
+
+    .back-to-store:hover {
+      color: var(--accent);
+      text-shadow: 0 0 8px rgba(214, 175, 55, 0.3);
+    }
+
+    /* Password visibility toggle button styling */
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      user-select: none;
+      transition: var(--transition-fast);
+    }
+
+    .toggle-password:hover {
+      color: var(--text-primary);
+    }
+
+    .demo-credentials {
+      margin-top: 24px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .demo-credentials code {
+      color: var(--accent);
+      background: rgba(214, 175, 55, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Lighting Effects -->
+  <div class="glow-sphere"></div>
+  <div class="glow-sphere-2"></div>
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="brand-logo">
+        <h2 class="text-gold">WEBE</h2>
+        <p>QUẢN TRỊ VIÊN HỆ THỐNG</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Tài khoản</label>
+          <div class="input-wrapper">
+            <!-- Inline SVG representing user icon -->
+            <svg style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            <input type="text" id="username" class="form-control input-with-icon" placeholder="Nhập tên đăng nhập" required autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mật khẩu</label>
+          <div class="input-wrapper">
+            <!-- Inline SVG representing key/lock icon -->
+            <svg style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            <input type="password" id="password" class="form-control input-with-icon" placeholder="Nhập mật khẩu" required autocomplete="current-password">
+            <span class="toggle-password" id="togglePassword">Hiện</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-login">Đăng Nhập</button>
+      </form>
+
+      <div class="demo-credentials">
+        Tài khoản Demo: <code>admin</code><br>
+        Mật khẩu Demo: <code>admin123</code>
+      </div>
+
+      <a href="index.html" class="back-to-store">
+        &larr; Quay lại trang chủ thời trang
+      </a>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Database & Logic -->
+  <script src="js/db.js?v=1.0.3"></script>
+  <script>
+    // Security check: if already logged in, redirect directly to admin.html
+    if (window.db.isAdminLoggedIn()) {
+      window.location.href = 'admin.html';
+    }
+
+    // Toggle Password Visibility
+    const passwordInput = document.getElementById('password');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    
+    togglePasswordBtn.addEventListener('click', () => {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        togglePasswordBtn.textContent = 'Ẩn';
+      } else {
+        passwordInput.type = 'password';
+        togglePasswordBtn.textContent = 'Hiện';
+      }
+    });
+
+    // Toast Notification Utility
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      
+      // Determine SVG check or cross icon based on type
+      const icon = type === 'success' 
+        ? `<svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+        : `<svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+      
+      toast.innerHTML = `${icon} <span>${message}</span>`;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'none'; // reset anim
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Login Form Submit Handler
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const user = document.getElementById('username').value;
+      const pass = passwordInput.value;
+      
+      if (window.db.loginAdmin(user, pass)) {
+        showToast('Đăng nhập thành công! Đang chuyển hướng...', 'success');
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 1200);
+      } else {
+        showToast('Sai tài khoản hoặc mật khẩu!', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

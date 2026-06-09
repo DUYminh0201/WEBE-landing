@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | WEBE Premium Fashion</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <!-- Security check on the top -->
+  <script src="js/db.js?v=1.0.3"></script>
+  <script>
+    if (!window.db.isAdminLoggedIn()) {
+      window.location.href = 'login.html';
+    }
+  </script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <h1 class="text-gold">WEBE</h1>
+      </div>
+      
+      <nav class="sidebar-menu">
+        <div class="menu-item active" data-target="dashboard-section">
+          <!-- Home Icon SVG -->
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+          <span>Tổng Quan</span>
+        </div>
+        
+        <div class="menu-item" data-target="products-section">
+          <!-- Shopping Bag Icon SVG -->
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+          </svg>
+          <span>Sản Phẩm</span>
+        </div>
+
+        <div class="menu-item" data-target="orders-section">
+          <!-- Clipboard Icon SVG -->
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+          </svg>
+          <span>Đơn Hàng</span>
+        </div>
+        
+        <div class="menu-item" data-target="settings-section">
+          <!-- Cog/Settings Icon SVG -->
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          <span>Thiết Lập</span>
+        </div>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="menu-item" id="btnLogout">
+          <!-- Logout Icon SVG -->
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+          <span>Đăng Xuất</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Main Header -->
+      <header class="main-header">
+        <div class="header-title">
+          <h2 id="pageTitle">Tổng Quan</h2>
+          <p id="pageSubtitle">Xin chào Quản trị viên, đây là số liệu thống kê thời gian thực.</p>
+        </div>
+        
+        <div class="header-actions">
+          <a href="index.html" class="btn btn-secondary" target="_blank">
+            <!-- Arrow Diagonal Top Right SVG -->
+            <svg style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 4px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+            Xem Cửa Hàng
+          </a>
+        </div>
+      </header>
+
+      <!-- SECTION 1: DASHBOARD METRICS -->
+      <section id="dashboard-section" class="dashboard-section active">
+        <div class="metrics-grid">
+          <!-- Total Products -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>Tổng sản phẩm</h3>
+              <div class="value" id="metric-total-products">0</div>
+            </div>
+            <div class="metric-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <!-- Inventory Sum -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>Tổng số lượng kho</h3>
+              <div class="value" id="metric-total-stock">0</div>
+            </div>
+            <div class="metric-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <!-- Categories Count -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>Danh mục hiện tại</h3>
+              <div class="value" id="metric-total-categories">0</div>
+            </div>
+            <div class="metric-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Out of stock Warning -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>Sắp hết hàng (&lt; 10)</h3>
+              <div class="value" id="metric-low-stock">0</div>
+            </div>
+            <div class="metric-icon" style="color: var(--danger)">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Total Orders -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>Tổng đơn hàng</h3>
+              <div class="value" id="metric-total-orders">0</div>
+            </div>
+            <div class="metric-icon" style="color: var(--accent);">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Unsynced Orders -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>Đơn chưa đồng bộ</h3>
+              <div class="value" id="metric-unsynced-orders">0</div>
+            </div>
+            <div class="metric-icon" style="color: var(--warning);">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3M3 12c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M3 12l-3 3m3-3l3-3"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities / Fast Look -->
+        <div class="section-card">
+          <div class="section-header">
+            <h3>Sản phẩm thêm gần đây</h3>
+            <button class="btn btn-secondary" onclick="document.querySelector('[data-target=products-section]').click()">Quản lý sản phẩm</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="custom-table" id="recentProductsTable">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Phân loại</th>
+                  <th>Giá bán</th>
+                  <th>Tồn kho</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated dynamically by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: PRODUCTS CRUD SECTION -->
+      <section id="products-section" class="dashboard-section">
+        <div class="section-card">
+          <div class="section-header">
+            <h3>Danh Sách Sản Phẩm</h3>
+            <button class="btn btn-primary" id="btnOpenAddModal">
+              <!-- Plus SVG -->
+              <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Thêm sản phẩm mới
+            </button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="custom-table" id="allProductsTable">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Phân loại</th>
+                  <th>Giá bán</th>
+                  <th>Màu sắc</th>
+                  <th>Size</th>
+                  <th>Tồn kho</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated dynamically by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: ORDERS SECTION -->
+      <section id="orders-section" class="dashboard-section">
+        <div class="section-card">
+          <div class="section-header">
+            <h3>Danh Sách Đơn Hàng</h3>
+            <div class="header-actions">
+              <button class="btn btn-secondary" id="btnOpenSheetSettings" title="Cấu hình Google Sheets" style="height: 44px; padding: 0 16px; font-size: 0.85rem;">
+                <!-- Settings Gear Icon SVG -->
+                <svg style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 4px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                </svg>
+                Cấu hình GG Sheet
+              </button>
+              <button class="btn btn-primary" id="btnSyncSelectedOrders" style="height: 44px; padding: 0 16px; font-size: 0.85rem;">
+                <!-- Sync Cloud Icon SVG -->
+                <svg style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 4px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"></path>
+                </svg>
+                Đồng bộ GG Sheet
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="custom-table" id="allOrdersTable">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"><input type="checkbox" id="selectAllOrders"></th>
+                  <th>Mã đơn</th>
+                  <th>Khách hàng</th>
+                  <th>Chi tiết sản phẩm</th>
+                  <th>Tổng tiền</th>
+                  <th>Ngày đặt</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated dynamically by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: SETTINGS / PASSWORD MANAGEMENT -->
+      <section id="settings-section" class="dashboard-section">
+        <div class="section-card settings-container">
+          <div class="section-header">
+            <h3>Thay Đổi Mật Khẩu Admin</h3>
+          </div>
+          <form id="changePasswordForm">
+            <div class="form-group">
+              <label for="newPassword">Mật khẩu mới</label>
+              <input type="password" id="newPassword" class="form-control" placeholder="Nhập mật khẩu mới" required>
+            </div>
+            <div class="form-group">
+              <label for="confirmNewPassword">Xác nhận mật khẩu</label>
+              <input type="password" id="confirmNewPassword" class="form-control" placeholder="Xác nhận mật khẩu mới" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ADD / EDIT PRODUCT MODAL -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="modalProductTitle">Thêm Sản Phẩm Mới</h3>
+        <span class="modal-close" id="btnCloseProductModal">
+          <!-- Cross SVG -->
+          <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </span>
+      </div>
+      
+      <div class="modal-body">
+        <form id="productForm">
+          <input type="hidden" id="editProductId">
+          
+          <div class="form-group">
+            <label for="prodName">Tên sản phẩm *</label>
+            <input type="text" id="prodName" class="form-control" placeholder="Ví dụ: Jacket Da Lộn Cổ Bẻ" required>
+          </div>
+
+          <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+            <div class="form-group">
+              <label for="prodCategory">Phân loại *</label>
+              <select id="prodCategory" class="form-control" required style="background: var(--bg-tertiary);">
+                <option value="Outerwear">Áo khoác (Outerwear)</option>
+                <option value="Trousers">Quần (Trousers)</option>
+                <option value="Streetwear">Thời trang dạo phố (Streetwear)</option>
+                <option value="Footwear">Giày dép (Footwear)</option>
+                <option value="Accessories">Phụ kiện (Accessories)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="prodPrice">Giá bán lẻ ($) *</label>
+              <input type="number" step="0.01" id="prodPrice" class="form-control" placeholder="Ví dụ: 129.99" required min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="prodComboPrice">Giá Combo (từ 2 cái) ($) *</label>
+              <input type="number" step="0.01" id="prodComboPrice" class="form-control" placeholder="Ví dụ: 99.99" required min="0">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prodStock">Tổng số tồn kho (Tự động tính)</label>
+              <input type="number" id="prodStock" class="form-control" readonly style="background: rgba(0,0,0,0.05); cursor: not-allowed;" placeholder="0">
+            </div>
+            
+            <!-- Color Selection Group -->
+            <div class="form-group colors-selector-container">
+              <label>Màu sắc chi tiết</label>
+              <div class="color-input-group" style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="prodColorInput" class="form-control" placeholder="Ví dụ: Đen, Xanh Navy, Trắng" style="flex: 1;">
+                <button type="button" class="btn btn-secondary" id="btnAddColor" style="padding: 10px 16px; white-space: nowrap;">
+                  Thêm màu
+                </button>
+              </div>
+              <div class="color-tags-list" id="colorTagsList">
+                <!-- Color tag items are populated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Sizes & Stock Config by Color -->
+          <div class="form-group" style="margin-top: 24px;">
+            <label style="font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; color: var(--text-secondary);">Cấu hình số lượng chi tiết theo màu & size</label>
+            <div id="colorStockContainer" style="margin-top: 12px;">
+              <!-- Dynamically rendered color stock blocks -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="prodDesc">Mô tả sản phẩm</label>
+            <textarea id="prodDesc" class="form-control" rows="4" placeholder="Nhập mô tả chi tiết của sản phẩm..."></textarea>
+          </div>
+
+          <!-- Upload Images -->
+          <div class="form-group">
+            <label>Ảnh sản phẩm (Có thể upload nhiều ảnh) *</label>
+            <div class="upload-dropzone" id="imageDropzone">
+              <!-- Cloud Upload Icon SVG -->
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+              </svg>
+              <p>Kéo thả ảnh vào đây hoặc click để <span>Tải lên từ máy</span></p>
+              <input type="file" id="imageFileInput" accept="image/*" multiple style="display: none;">
+            </div>
+            <div class="image-preview-grid" id="imagePreviewGrid">
+              <!-- Uploaded files previews are generated here -->
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelProductModal">Hủy</button>
+        <button type="submit" form="productForm" class="btn btn-primary" id="btnSaveProduct">Lưu Sản Phẩm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal-container" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Xác Nhận Xóa</h3>
+        <span class="modal-close" id="btnCloseDeleteModal">
+          <!-- Cross SVG -->
+          <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa sản phẩm <strong id="deleteProductName">này</strong>? Thao tác này không thể hoàn tác.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelDeleteModal">Hủy</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmDelete">Xóa Ngay</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOOGLE SHEETS SETTINGS MODAL -->
+  <div class="modal-overlay" id="sheetSettingsModal">
+    <div class="modal-container" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Cấu Hình Google Sheets</h3>
+        <span class="modal-close" id="btnCloseSheetSettingsModal">
+          <!-- Cross SVG -->
+          <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="modal-body">
+        <form id="sheetSettingsForm">
+          <div class="form-group">
+            <label for="googleSheetUrl">Google Apps Script Web App URL</label>
+            <input type="url" id="googleSheetUrl" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.4;">
+              Nhập Web App URL từ Google Apps Script để gửi đơn hàng trực tiếp lên Google Sheets.
+            </p>
+          </div>
+          
+          <div style="background-color: var(--bg-tertiary); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-top: 16px;">
+            <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--accent);">Hướng dẫn tạo Google Apps Script:</h4>
+            <ol style="font-size: 0.8rem; color: var(--text-secondary); padding-left: 16px; display: flex; flex-direction: column; gap: 6px;">
+              <li>Tạo một file Google Sheets mới.</li>
+              <li>Chọn <strong>Tiện ích mở rộng (Extensions)</strong> &gt; <strong>Apps Script</strong>.</li>
+              <li>Dán mã script xử lý (Click xem mã mẫu ở bên dưới).</li>
+              <li>Click <strong>Triển khai (Deploy)</strong> &gt; <strong>Triển khai mới (New deployment)</strong>.</li>
+              <li>Chọn loại là <strong>Ứng dụng web (Web app)</strong>. Ở phần "Ai có quyền truy cập" chọn <strong>Bất kỳ ai (Anyone)</strong>.</li>
+              <li>Sao chép URL ứng dụng web và dán vào ô trên đây.</li>
+            </ol>
+            
+            <button type="button" id="btnShowScriptSample" style="margin-top: 12px; font-size: 0.8rem; color: var(--accent); cursor: pointer; text-decoration: underline; background: none; border: none; font-weight: 600; padding: 0;">Xem mã Apps Script mẫu</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelSheetSettings">Hủy</button>
+        <button type="submit" form="sheetSettingsForm" class="btn btn-primary">Lưu Cấu Hình</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT SAMPLE MODAL -->
+  <div class="modal-overlay" id="scriptSampleModal" style="z-index: 3100;">
+    <div class="modal-container" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>Mã Nguồn Google Apps Script Mẫu</h3>
+        <span class="modal-close" id="btnCloseScriptSampleModal">
+          <!-- Cross SVG -->
+          <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 12px;">
+          Sao chép mã này vào Google Apps Script trong Google Sheet của bạn. Nó sẽ tự động nhận đơn hàng và lưu vào các dòng tương ứng.
+        </p>
+        <div style="position: relative;">
+          <textarea id="appsScriptCodeSample" class="form-control" rows="12" readonly style="font-family: monospace; font-size: 0.8rem; background: var(--bg-primary); color: #d4af37; border-color: var(--border-color); resize: none;">function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // Add header row if sheet is empty
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["Mã Đơn", "Tên Khách Hàng", "Số Điện Thoại", "Địa Chỉ", "Sản Phẩm", "Tạm Tính ($)", "Phí Ship ($)", "Tổng Tiền ($)", "Ngày Đặt"]);
+    }
+    
+    // Format items string
+    var itemsStr = data.items.map(function(item) {
+      return item.name + " (Màu: " + item.color + ", Size: " + item.size + ", SL: " + item.qty + ")";
+    }).join("\n");
+    
+    sheet.appendRow([
+      data.id,
+      data.customerName,
+      data.customerPhone,
+      data.customerAddress,
+      itemsStr,
+      data.subtotal,
+      data.shippingFee,
+      data.totalAmount,
+      new Date(data.createdAt).toLocaleString("vi-VN")
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({result: "success"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({result: "error", error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</textarea>
+          <button type="button" class="btn btn-primary" id="btnCopyScriptCode" style="margin-top: 12px; width: 100%; font-size: 0.85rem; padding: 10px;">Sao Chép Mã Nguồn</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Messages Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Load Scripts -->
+  <script src="js/admin.js?v=1.0.3"></script>
+</body>
+</html>

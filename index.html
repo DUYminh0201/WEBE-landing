@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEBE | Premium Contemporary Fashion Store</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description"
+    content="Khám phá bộ sưu tập thời trang đương đại WEBE. Thiết kế tối giản, chất liệu cao cấp và phong cách đô thị thời thượng.">
+  <meta name="keywords" content="thời trang, webe, premium fashion, áo khoác, streetwear, quần áo thiết kế">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+
+<body>
+
+  <!-- Floating Navigation Bar -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-container">
+      <div class="logo">
+        <a href="index.html">WEBE</a>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="#" class="nav-link active" data-filter="all" data-i18n="nav_all">Tất Cả</a></li>
+        <li><a href="#" class="nav-link" data-filter="Outerwear" data-i18n="nav_outerwear">Áo Khoác</a></li>
+        <li><a href="#" class="nav-link" data-filter="Trousers" data-i18n="nav_trousers">Quần</a></li>
+        <li><a href="#" class="nav-link" data-filter="Streetwear" data-i18n="nav_streetwear">Streetwear</a></li>
+        <li><a href="#" class="nav-link" data-filter="Footwear" data-i18n="nav_footwear">Giày Dép</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- Language Selector Dropdown -->
+        <div class="lang-selector-wrapper">
+          <button class="btn-icon" id="btnLangSelector" title="Ngôn ngữ / Language / ភាសា">
+            <!-- Globe Icon SVG -->
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253">
+              </path>
+            </svg>
+          </button>
+          <div class="lang-dropdown" id="langDropdown">
+            <button class="lang-option-btn active" data-lang="vi">Tiếng Việt</button>
+            <button class="lang-option-btn" data-lang="en">English</button>
+            <button class="lang-option-btn" data-lang="km">ភាសាខ្មែរ</button>
+          </div>
+        </div>
+
+        <!-- Cart Trigger Badge -->
+        <button class="btn-icon cart-trigger" id="btnOpenCart" title="Giỏ hàng">
+          <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+          </svg>
+          <span class="cart-count" id="cartBadge">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <div class="container" style="height: 100%; display: flex; align-items: center; width: 100%;">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge badge-primary" data-i18n="hero_badge_new">WEBE</span>
+          <span data-i18n="hero_badge_season">BST THỜI TRANG ĐƯƠNG ĐẠI UNISEX 2026</span>
+        </div>
+        <h1 class="hero-title" data-i18n="hero_title">Định Hình<br><span class="text-gold">Phong Cách</span><br>Đương
+          Đại</h1>
+        <p class="hero-description" data-i18n="hero_desc">Tinh tế trong từng đường kim mũi chỉ, tối giản trong ngôn ngữ
+          thiết kế. Trải nghiệm
+          chất lượng may mặc cao cấp vượt trội từ WEBE.</p>
+        <div class="hero-buttons">
+          <a href="#collection" class="btn btn-primary" data-i18n="hero_buy_now">Mua Ngay</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Image Media -->
+    <div class="hero-bg-media">
+      <img src="assets/hero_model.png" class="hero-img" alt="WEBE Premium Contemporary Fashion Lookbook Model">
+    </div>
+  </header>
+
+  <!-- Trust Propositions Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="features-grid">
+        <!-- Feature 1 -->
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title" data-i18n="feat1_title">Vận Chuyển Hỏa Tốc</h3>
+          <p class="feature-desc" data-i18n="feat1_desc">Giao hàng miễn phí toàn quốc cho hóa đơn từ $50. Đóng gói hộp
+            quà tặng cao cấp bảo vệ
+            sản phẩm tối đa.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-11.314l.707.707m11.314 11.314l.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z">
+              </path>
+            </svg>
+          </div>
+          <h3 class="feature-title" data-i18n="feat2_title">Chất Liệu Cao Cấp</h3>
+          <p class="feature-desc" data-i18n="feat2_desc">Cam kết sử dụng nguồn chất liệu bền vững như Organic Cotton,
+            len tự nhiên và lụa tơ
+            tằm thượng hạng cực kỳ thân thiện làn da.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+              </path>
+            </svg>
+          </div>
+          <h3 class="feature-title" data-i18n="feat3_title">Thiết Kế Độc Quyền</h3>
+          <p class="feature-desc" data-i18n="feat3_desc">Từng thiết kế đều được phác thảo và chế tác giới hạn, đảm bảo
+            phom dáng chuẩn chỉnh
+            tôn đường nét người mặc.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Collection Section -->
+  <section class="collection-section" id="collection">
+    <div class="container">
+      <div class="collection-header">
+        <h2 data-i18n="coll_title">Sản Phẩm Nổi Bật</h2>
+        <p data-i18n="coll_desc">Chọn lọc những thiết kế đặc sắc nhất cho cả nam và nữ, từ áo sơ mi, áo khoác cho tới
+          giày da sang trọng.
+        </p>
+
+        <!-- Category Filter Tabs -->
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all" data-i18n="coll_tab_all">Tất cả</button>
+          <button class="filter-tab" data-filter="Outerwear" data-i18n="coll_tab_outer">Áo khoác</button>
+          <button class="filter-tab" data-filter="Trousers" data-i18n="coll_tab_trousers">Quần</button>
+          <button class="filter-tab" data-filter="Streetwear" data-i18n="coll_tab_street">Streetwear</button>
+          <button class="filter-tab" data-filter="Footwear" data-i18n="coll_tab_footwear">Giày dép</button>
+          <button class="filter-tab" data-filter="Accessories" data-i18n="coll_tab_acc">Phụ kiện</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Product List -->
+      <div class="products-grid" id="productsGrid">
+        <!-- Products populated dynamically by landing.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Side Cart Drawer Overlay -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3 data-i18n="cart_title">Giỏ Hàng Của Bạn</h3>
+      <span class="cart-close" id="btnCloseCart">
+        <!-- Cross SVG -->
+        <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </span>
+    </div>
+
+    <!-- Scrollable Items List -->
+    <div class="cart-items" id="cartItemsContainer">
+      <!-- Generated dynamically in landing.js -->
+    </div>
+
+    <!-- Summary Total Box -->
+    <div class="cart-footer">
+      <div class="cart-totals-list" style="margin-bottom: 20px;">
+        <div class="cart-totals-row">
+          <span data-i18n="cart_subtotal">Tạm tính:</span>
+          <span id="cartSubtotal">$0.00</span>
+        </div>
+        <div class="cart-totals-row">
+          <span data-i18n="cart_shipping">Phí vận chuyển:</span>
+          <span id="cartShipping">$0.00</span>
+        </div>
+        <div class="cart-totals-row total-row">
+          <span data-i18n="cart_total">Tổng thanh toán:</span>
+          <span class="text-gold" id="cartTotal">$0.00</span>
+        </div>
+      </div>
+      <button class="btn btn-primary cart-checkout-btn" id="btnCheckout" data-i18n="cart_checkout">Thanh Toán Ngay</button>
+    </div>
+  </div>
+
+  <!-- PRODUCT QUICK VIEW OVERLAY MODAL -->
+  <div class="modal-overlay" id="quickViewModal">
+    <div class="modal-container">
+      <div class="modal-header" style="border-bottom: none;">
+        <div></div>
+        <span class="modal-close" id="btnCloseQVModal">
+          <!-- Cross SVG -->
+          <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </span>
+      </div>
+
+      <div class="modal-body" style="padding-top: 0;">
+        <div class="quick-view-container">
+          <!-- Left Gallery Image Carousel -->
+          <div class="quick-view-gallery">
+            <div class="gallery-main-wrapper">
+              <img id="qvMainImage" src="" class="gallery-main-img" alt="product main view">
+            </div>
+            <div class="gallery-thumbs" id="qvThumbs">
+              <!-- Dynamically populated thumbnails -->
+            </div>
+          </div>
+
+          <!-- Right specs selector panel -->
+          <div class="quick-view-details">
+            <span class="qv-category" id="qvCategory">Category</span>
+            <h2 class="qv-title" id="qvTitle">Product Name</h2>
+            <div class="qv-price" id="qvPrice">$0.00</div>
+            <p class="qv-desc" id="qvDesc">Description goes here...</p>
+
+            <!-- Color Options Selection -->
+            <div class="variant-selection">
+              <h4 class="variant-title" data-i18n="qv_color">Màu sắc:</h4>
+              <div class="color-variants" id="qvColorsContainer">
+                <!-- Color dots -->
+              </div>
+            </div>
+
+            <!-- Size Selection -->
+            <div class="variant-selection">
+              <h4 class="variant-title" data-i18n="qv_size">Kích cỡ:</h4>
+              <div class="size-variants" id="qvSizesContainer">
+                <!-- Sizes items -->
+              </div>
+            </div>
+
+            <div class="qv-stock-info" id="qvStockInfo">Còn hàng: 0 sản phẩm</div>
+
+            <button class="btn btn-primary" id="btnQVAddToCart" style="width: 100%; margin-top: 24px; padding: 16px;"
+              data-i18n="qv_add_to_cart">
+              Thêm Vào Giỏ Hàng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal-container" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 data-i18n="check_title">Thông Tin Giao Hàng</h3>
+        <span class="modal-close" id="btnCloseCheckoutModal">
+          <!-- Cross SVG -->
+          <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="modal-body">
+        <form id="checkoutForm">
+          <div class="form-group">
+            <label for="custName" data-i18n="check_name">Họ và Tên *</label>
+            <input type="text" id="custName" class="form-control" placeholder="Nhập họ và tên đầy đủ" required>
+          </div>
+          <div class="form-group">
+            <label for="custPhone" data-i18n="check_phone">Số Điện Thoại *</label>
+            <input type="tel" id="custPhone" class="form-control" placeholder="Nhập số điện thoại liên hệ" required
+              pattern="[0-9]{9,11}" title="Vui lòng nhập số điện thoại hợp lệ từ 9 đến 11 số">
+          </div>
+          <div class="form-group">
+            <label for="custAddress" data-i18n="check_address">Địa Chỉ Giao Hàng *</label>
+            <textarea id="custAddress" class="form-control" rows="3" placeholder="Nhập địa chỉ giao nhận chi tiết"
+              required></textarea>
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+              <span data-i18n="cart_subtotal">Tạm tính:</span>
+              <span id="checkoutSubtotal">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+              <span data-i18n="cart_shipping">Phí vận chuyển:</span>
+              <span id="checkoutShipping">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.15rem; color: var(--text-primary); border-top: 1px dashed var(--border-color); padding-top: 12px; margin-top: 12px; align-items: center;">
+              <span data-i18n="cart_total">Tổng thanh toán:</span>
+              <span class="text-gold" id="checkoutTotalAmount" style="font-size: 1.4rem; font-weight: 700; font-family: var(--font-heading);">$0.00</span>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelCheckout" data-i18n="check_cancel">Hủy</button>
+        <button type="submit" form="checkoutForm" class="btn btn-primary" id="btnConfirmCheckout"
+          data-i18n="check_confirm">Xác Nhận Đặt Hàng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Storefooter -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-about">
+          <h4 class="text-gold" data-i18n="foot_about_title">WEBE</h4>
+          <p data-i18n="foot_about_desc">Nhà may đo và cung cấp các giải pháp thời trang đô thị tối giản hàng đầu. Định
+            hình xu hướng thiết kế cao
+            cấp và độc bản.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="foot_coll_title">Bộ Sưu Tập</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link" data-filter="Outerwear" data-i18n="foot_links_outer">Áo khoác nam nữ</a>
+            <a href="#" class="footer-link" data-filter="Trousers" data-i18n="foot_links_trousers">Quần thiết kế</a>
+            <a href="#" class="footer-link" data-filter="Streetwear" data-i18n="foot_links_street">Streetwear độc
+              bản</a>
+            <a href="#" class="footer-link" data-filter="Footwear" data-i18n="foot_links_footwear">Giày da cao cấp</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="foot_info_title">Thông Tin</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link" data-i18n="foot_links_brand">Về thương hiệu</a>
+            <a href="#" class="footer-link" data-i18n="foot_links_ship">Chính sách vận chuyển</a>
+            <a href="#" class="footer-link" data-i18n="foot_links_refund">Đổi trả & hoàn tiền</a>
+          </div>
+        </div>
+
+        <div class="footer-col footer-newsletter">
+          <h4 data-i18n="foot_news_title">Nhận Bản Tin</h4>
+          <p data-i18n="foot_news_desc">Đăng ký nhận thông tin về các bộ sưu tập mới và ưu đãi đặc quyền sớm nhất.</p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" placeholder="Địa chỉ email của bạn" required>
+            <button type="submit" data-i18n="foot_news_btn">Đăng Ký</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p data-i18n="foot_copy">&copy; 2026 WEBE. Tất cả quyền được bảo lưu.</p>
+        <p data-i18n="foot_credit">Thiết kế bởi Đội ngũ kỹ sư sáng tạo của Google DeepMind.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FIRST VISIT LANGUAGE WELCOME POPUP -->
+  <div class="modal-overlay" id="langWelcomeModal" style="z-index: 4000;">
+    <div class="modal-container" style="max-width: 440px; text-align: center; padding: 32px 24px;">
+      <div style="font-size: 2.5rem; margin-bottom: 16px; color: var(--accent);">
+        <!-- Globe Icon SVG -->
+        <svg style="width: 56px; height: 56px; margin: 0 auto;" fill="none" stroke="currentColor" stroke-width="1.5"
+          viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253">
+          </path>
+        </svg>
+      </div>
+      <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 8px;">Vui lòng
+        chọn ngôn ngữ</h3>
+      <h4
+        style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 4px; text-transform: none; letter-spacing: normal;">
+        Please select your language</h4>
+      <h4
+        style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 24px; text-transform: none; letter-spacing: normal;">
+        សូមជ្រើសរើសភាសារបស់អ្នក</h4>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+        <button class="btn btn-primary welcome-lang-btn" data-lang="vi" style="width: 100%;">Tiếng Việt</button>
+        <button class="btn btn-secondary welcome-lang-btn" data-lang="en" style="width: 100%;">English</button>
+        <button class="btn btn-secondary welcome-lang-btn" data-lang="km" style="width: 100%;">ភាសាខ្មែរ
+          (Khmer)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Load Database and Store logic -->
+  <script src="js/db.js?v=1.0.3"></script>
+  <script src="js/landing.js?v=1.0.3"></script>
+</body>
+
+</html>
