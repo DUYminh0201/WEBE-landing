@@ -12,12 +12,13 @@
  */
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCWRqPfY_xyyWZ9tIlsBZ8LJfQDY2qaJf4",
+  authDomain: "webefashion-278a3.firebaseapp.com",
+  projectId: "webefashion-278a3",
+  storageBucket: "webefashion-278a3.firebasestorage.app",
+  messagingSenderId: "661522155842",
+  appId: "1:661522155842:web:c975b69ff39095834f60db",
+  measurementId: "G-2PGLZQN1CQ"
 };
 
 // Kiểm tra xem cấu hình có phải là thật hay vẫn là placeholder
