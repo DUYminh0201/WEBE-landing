@@ -1240,4 +1240,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   renderProducts();
+
+  // Listen to Firestore real-time database updates
+  document.addEventListener('db-updated', (e) => {
+    if (e.detail.type === 'products') {
+      renderProducts();
+    }
+  });
 });

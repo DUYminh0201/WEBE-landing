@@ -1011,6 +1011,13 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTables();
   renderOrdersTable();
 
+  // Listen to Firestore real-time database updates
+  document.addEventListener('db-updated', (e) => {
+    renderMetrics();
+    renderTables();
+    renderOrdersTable();
+  });
+
   // Helper to recalculate total stock dynamically
   function updateAdminTotalStock() {
     let total = 0;

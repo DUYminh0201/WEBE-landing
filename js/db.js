@@ -172,20 +172,104 @@ function initDB() {
 // Ensure database is initialized
 initDB();
 
+// Caches for Firestore Database (real-time sync)
+const dbCaches = {
+  products: [],
+  orders: [],
+  settings: { googleSheetsUrl: '', adminPassword: 'admin123' }
+};
+
+if (window.firebaseEnabled) {
+  // 1. Seed Firestore with default products if empty
+  window.firebaseDb.collection('products').get().then(snapshot => {
+    if (snapshot.empty) {
+      console.log("🌱 Seeding Firestore with default products...");
+      DEFAULT_PRODUCTS.forEach(p => {
+        const pId = p.id;
+        const data = { ...p };
+        delete data.id;
+        window.firebaseDb.collection('products').doc(pId).set(data);
+      });
+    }
+  });
+
+  // 2. Real-time products sync
+  window.firebaseDb.collection('products').onSnapshot(snapshot => {
+    const products = [];
+    snapshot.forEach(doc => {
+      products.push({ id: doc.id, ...doc.data() });
+    });
+    dbCaches.products = products;
+    document.dispatchEvent(new CustomEvent('db-updated', { detail: { type: 'products', data: products } }));
+  }, error => {
+    console.error("Firestore products sync error:", error);
+  });
+
+  // 3. Real-time orders sync
+  window.firebaseDb.collection('orders').onSnapshot(snapshot => {
+    const orders = [];
+    snapshot.forEach(doc => {
+      orders.push({ id: doc.id, ...doc.data() });
+    });
+    orders.sort((a, b) => b.createdAt - a.createdAt);
+    dbCaches.orders = orders;
+    document.dispatchEvent(new CustomEvent('db-updated', { detail: { type: 'orders', data: orders } }));
+  }, error => {
+    console.error("Firestore orders sync error:", error);
+  });
+
+  // 4. Real-time settings sync
+  window.firebaseDb.collection('settings').doc('global').onSnapshot(doc => {
+    if (doc.exists) {
+      dbCaches.settings = doc.data();
+    } else {
+      window.firebaseDb.collection('settings').doc('global').set({
+        googleSheetsUrl: localStorage.getItem('fashion_store_google_sheets_url') || '',
+        adminPassword: 'admin123'
+      });
+    }
+    document.dispatchEvent(new CustomEvent('db-updated', { detail: { type: 'settings', data: dbCaches.settings } }));
+  }, error => {
+    console.error("Firestore settings sync error:", error);
+  });
+}
+
 const db = {
   // PRODUCTS CRUD
   getProducts() {
+    if (window.firebaseEnabled) {
+      return dbCaches.products;
+    }
     return JSON.parse(localStorage.getItem(DB_PRODUCTS_KEY)) || [];
   },
 
   getProductById(id) {
+    if (window.firebaseEnabled) {
+      return dbCaches.products.find(p => p.id === id) || null;
+    }
     const products = this.getProducts();
     return products.find(p => p.id === id) || null;
   },
 
   saveProduct(product) {
+    if (window.firebaseEnabled) {
+      const data = { ...product };
+      let pId = product.id;
+      if (pId) {
+        delete data.id;
+        data.updatedAt = Date.now();
+        window.firebaseDb.collection('products').doc(pId).set(data, { merge: true });
+      } else {
+        pId = 'prod_' + Math.random().toString(36).substr(2, 9);
+        product.id = pId;
+        delete data.id;
+        data.createdAt = Date.now();
+        window.firebaseDb.collection('products').doc(pId).set(data);
+      }
+      return product;
+    }
+
     const products = this.getProducts();
-    
     if (product.id) {
       // Update
       const index = products.findIndex(p => p.id === product.id);
@@ -208,6 +292,11 @@ const db = {
   },
 
   deleteProduct(id) {
+    if (window.firebaseEnabled) {
+      window.firebaseDb.collection('products').doc(id).delete();
+      return true;
+    }
+
     let products = this.getProducts();
     const originalLength = products.length;
     products = products.filter(p => p.id !== id);
@@ -221,6 +310,15 @@ const db = {
   },
 
   loginAdmin(username, password) {
+    if (window.firebaseEnabled) {
+      const pass = dbCaches.settings.adminPassword || 'admin123';
+      if (username.trim() === 'admin' && password === pass) {
+        sessionStorage.setItem('admin_session', 'active');
+        return true;
+      }
+      return false;
+    }
+
     const adminCredentials = JSON.parse(localStorage.getItem(DB_ADMIN_KEY));
     if (
       adminCredentials.username === username.trim() &&
@@ -237,6 +335,13 @@ const db = {
   },
 
   changeAdminPassword(newPassword) {
+    if (window.firebaseEnabled) {
+      window.firebaseDb.collection('settings').doc('global').set({
+        adminPassword: newPassword
+      }, { merge: true });
+      return true;
+    }
+
     const adminCredentials = JSON.parse(localStorage.getItem(DB_ADMIN_KEY)) || DEFAULT_ADMIN;
     adminCredentials.password = newPassword;
     localStorage.setItem(DB_ADMIN_KEY, JSON.stringify(adminCredentials));
@@ -245,15 +350,39 @@ const db = {
 
   // ORDERS MANAGEMENT
   getOrders() {
+    if (window.firebaseEnabled) {
+      return dbCaches.orders;
+    }
     return JSON.parse(localStorage.getItem('fashion_store_orders')) || [];
   },
 
   getOrderById(id) {
+    if (window.firebaseEnabled) {
+      return dbCaches.orders.find(o => o.id === id) || null;
+    }
     const orders = this.getOrders();
     return orders.find(o => o.id === id) || null;
   },
 
   saveOrder(order) {
+    if (window.firebaseEnabled) {
+      const data = { ...order };
+      let oId = order.id;
+      if (oId) {
+        delete data.id;
+        data.updatedAt = Date.now();
+        window.firebaseDb.collection('orders').doc(oId).set(data, { merge: true });
+      } else {
+        oId = 'ord_' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        order.id = oId;
+        delete data.id;
+        data.createdAt = Date.now();
+        data.synced = false;
+        window.firebaseDb.collection('orders').doc(oId).set(data);
+      }
+      return order;
+    }
+
     const orders = this.getOrders();
     if (order.id) {
       const idx = orders.findIndex(o => o.id === order.id);
@@ -275,10 +404,20 @@ const db = {
   },
 
   getGoogleSheetsUrl() {
+    if (window.firebaseEnabled) {
+      return dbCaches.settings.googleSheetsUrl || '';
+    }
     return localStorage.getItem('fashion_store_google_sheets_url') || '';
   },
 
   saveGoogleSheetsUrl(url) {
+    if (window.firebaseEnabled) {
+      window.firebaseDb.collection('settings').doc('global').set({
+        googleSheetsUrl: url.trim()
+      }, { merge: true });
+      return true;
+    }
+
     localStorage.setItem('fashion_store_google_sheets_url', url.trim());
     return true;
   }
