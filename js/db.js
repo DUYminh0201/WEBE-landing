@@ -13,6 +13,7 @@ const DEFAULT_PRODUCTS = [
     description: 'Elevate your urban style with our signature Oversized Velvet Bomber Jacket. Featuring heavy-duty gunmetal zipper detailing, double-stitched ribbed trims, and a luxurious quilted interior lining for superior warmth. Perfectly pairs with relaxed denim or structured trousers.',
     price: 189.00,
     comboPrice: 159.00,
+    comboMinQty: 2,
     category: 'Outerwear',
     images: [
       'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800',
@@ -34,6 +35,7 @@ const DEFAULT_PRODUCTS = [
     description: 'Crafted from a premium lightweight linen-cotton blend. Designed with a clean-front waistband, adjustable internal drawstrings, and a modern relaxed straight-leg drape. Ideal for warm weather sophistication and off-duty elegance.',
     price: 95.00,
     comboPrice: 79.00,
+    comboMinQty: 2,
     category: 'Trousers',
     images: [
       'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800',
@@ -55,6 +57,7 @@ const DEFAULT_PRODUCTS = [
     description: 'A heavyweight french terry knit hoodie defined by subtle hand-stitched gold accents on the drawstrings and emblem. Boasts a dropped shoulder silhouette and double-lined hood for the ultimate structural fit.',
     price: 125.00,
     comboPrice: 99.00,
+    comboMinQty: 2,
     category: 'Streetwear',
     images: [
       'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=800',
@@ -76,6 +79,7 @@ const DEFAULT_PRODUCTS = [
     description: 'Constructed from full-grain Italian calfskin leather. Built with comfortable elastic side panels, a pull-loop, and a robust stacked leather sole with rubber grip. A versatile classic designed to age beautifully.',
     price: 240.00,
     comboPrice: 210.00,
+    comboMinQty: 2,
     category: 'Footwear',
     images: [
       'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&q=80&w=800',
@@ -109,6 +113,10 @@ function initDB() {
       products.forEach(p => {
         if (p.price && !p.comboPrice) {
           p.comboPrice = Math.round(p.price * 0.85);
+          migrated = true;
+        }
+        if (p.comboPrice && !p.comboMinQty) {
+          p.comboMinQty = 2;
           migrated = true;
         }
         

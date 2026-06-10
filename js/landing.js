@@ -156,8 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
       qv_no_size: "Freesize / Một kích cỡ",
       toast_limit_update: "Rất tiếc! Số lượng hàng tồn trong kho chỉ còn {stock} chiếc.",
       toast_required_fields: "Vui lòng điền đầy đủ các thông tin bắt buộc!",
-      qv_combo_price: "Combo (từ 2 cái): {price}/ 2 cái",
-      card_combo_price: "Combo (2+): {price}/ 2 cái",
+      qv_combo_price: "Combo (từ {qty} cái): {price}/ {qty} cái",
+      card_combo_price: "Combo ({qty}+): {price}/ {qty} cái",
       cart_default_color: "Mặc định"
     },
     en: {
@@ -249,8 +249,8 @@ document.addEventListener('DOMContentLoaded', () => {
       qv_no_size: "Freesize / One size",
       toast_limit_update: "Sorry! The stock limit in warehouse is only {stock} items.",
       toast_required_fields: "Please fill in all required fields!",
-      qv_combo_price: "Combo (from 2 pcs): {price}/ 2 pcs",
-      card_combo_price: "Combo (2+): {price}/ 2 pcs",
+      qv_combo_price: "Combo (from {qty} pcs): {price}/ {qty} pcs",
+      card_combo_price: "Combo ({qty}+): {price}/ {qty} pcs",
       cart_default_color: "Default"
     },
     km: {
@@ -342,8 +342,8 @@ document.addEventListener('DOMContentLoaded', () => {
       qv_no_size: "Freesize / ទំហំតែមួយ",
       toast_limit_update: "សុំទោស! ដែនកំណត់ស្តុកនៅក្នុងឃ្លាំងគឺត្រឹមតែ {stock} គ្រឿងប៉ុណ្ហោះ។",
       toast_required_fields: "សូមបំពេញព័ត៌មានដែលត្រូវការទាំងអស់!",
-      qv_combo_price: "Combo (ចាប់ពី ២ គ្រឿង): {price}/ ២ គ្រឿង",
-      card_combo_price: "Combo (២+): {price}/ ២ គ្រឿង",
+      qv_combo_price: "Combo (ចាប់ពី {qty} គ្រឿង): {price}/ {qty} គ្រឿង",
+      card_combo_price: "Combo ({qty}+): {price}/ {qty} គ្រឿង",
       cart_default_color: "លំនាំដើម"
     }
   };
@@ -532,7 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="product-card-price-variants">
             <div style="display: flex; flex-direction: column; gap: 2px;">
               <span class="product-card-price">$${parseFloat(p.price).toFixed(2)}</span>
-              ${p.comboPrice ? `<span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">${getTranslationText('card_combo_price', { price: `$${parseFloat(p.comboPrice).toFixed(2)}` })}</span>` : ''}
+              ${p.comboPrice ? `<span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">${getTranslationText('card_combo_price', { price: `$${parseFloat(p.comboPrice).toFixed(2)}`, qty: p.comboMinQty || 2 })}</span>` : ''}
             </div>
             <div class="product-card-variants">
               <span class="product-card-sizes">${sizesLabel}</span>
@@ -697,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (product.comboPrice) {
       const retailPriceFormatted = `$${parseFloat(product.price).toFixed(2)}`;
       const comboPriceFormatted = `$${parseFloat(product.comboPrice).toFixed(2)}`;
-      const comboText = getTranslationText('qv_combo_price', { price: comboPriceFormatted });
+      const comboText = getTranslationText('qv_combo_price', { price: comboPriceFormatted, qty: product.comboMinQty || 2 });
       qvPrice.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 4px;">
           <span>${retailPriceFormatted}</span>
@@ -915,11 +915,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const dbProduct = window.db.getProductById(item.productId);
       const qty = prodQtyMap[item.productId];
+      const minQty = dbProduct && dbProduct.comboMinQty ? parseInt(dbProduct.comboMinQty) : 2;
 
-      if (dbProduct && dbProduct.comboPrice && qty >= 2) {
-        const pairs = Math.floor(qty / 2);
-        const single = qty % 2;
-        total += (pairs * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
+      if (dbProduct && dbProduct.comboPrice && qty >= minQty) {
+        const bundles = Math.floor(qty / minQty);
+        const single = qty % minQty;
+        total += (bundles * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
       } else {
         cart.filter(i => i.productId === item.productId).forEach(i => {
           total += parseFloat(i.price) * i.qty;
@@ -957,7 +958,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cart.forEach(item => {
       const dbProduct = window.db.getProductById(item.productId);
       const totalProductQty = prodQtyMap[item.productId];
-      const isCombo = dbProduct && dbProduct.comboPrice && totalProductQty >= 2;
+      const minQty = dbProduct && dbProduct.comboMinQty ? parseInt(dbProduct.comboMinQty) : 2;
+      const isCombo = dbProduct && dbProduct.comboPrice && totalProductQty >= minQty;
 
       let colorLabel = `<span>${getTranslationText('cart_default_color')}</span>`;
       if (item.color !== 'default') {
@@ -970,9 +972,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let priceDisplay = '';
       if (isCombo) {
-        const pairs = Math.floor(totalProductQty / 2);
-        const single = totalProductQty % 2;
-        const totalProductPrice = (pairs * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
+        const bundles = Math.floor(totalProductQty / minQty);
+        const single = totalProductQty % minQty;
+        const totalProductPrice = (bundles * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
         
         // Average unit price to apportion this line total
         const avgUnitPrice = totalProductPrice / totalProductQty;
@@ -1149,13 +1151,14 @@ document.addEventListener('DOMContentLoaded', () => {
       items: cart.map(item => {
         const dbProduct = window.db.getProductById(item.productId);
         const totalProductQty = prodQtyMap[item.productId];
-        const isCombo = dbProduct && dbProduct.comboPrice && totalProductQty >= 2;
+        const minQty = dbProduct && dbProduct.comboMinQty ? parseInt(dbProduct.comboMinQty) : 2;
+        const isCombo = dbProduct && dbProduct.comboPrice && totalProductQty >= minQty;
         
         let actualPrice = parseFloat(item.price);
         if (isCombo) {
-          const pairs = Math.floor(totalProductQty / 2);
-          const single = totalProductQty % 2;
-          const totalProductPrice = (pairs * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
+          const bundles = Math.floor(totalProductQty / minQty);
+          const single = totalProductQty % minQty;
+          const totalProductPrice = (bundles * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
           actualPrice = totalProductPrice / totalProductQty;
         }
         

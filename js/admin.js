@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const prodCategoryInput = document.getElementById('prodCategory');
   const prodPriceInput = document.getElementById('prodPrice');
   const prodComboPriceInput = document.getElementById('prodComboPrice');
+  const prodComboMinQtyInput = document.getElementById('prodComboMinQty');
   const prodStockInput = document.getElementById('prodStock');
   const prodDescInput = document.getElementById('prodDesc');
   const prodColorInput = document.getElementById('prodColorInput');
@@ -525,6 +526,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('modalProductTitle').textContent = 'Thêm Sản Phẩm Mới';
     editProductIdInput.value = '';
     productForm.reset();
+    if (prodComboMinQtyInput) {
+      prodComboMinQtyInput.value = 2;
+    }
     selectedColors = [];
     selectedImages = [];
     renderColorTags();
@@ -550,6 +554,9 @@ document.addEventListener('DOMContentLoaded', () => {
     prodPriceInput.value = product.price;
     if (prodComboPriceInput) {
       prodComboPriceInput.value = product.comboPrice || '';
+    }
+    if (prodComboMinQtyInput) {
+      prodComboMinQtyInput.value = product.comboMinQty || 2;
     }
     prodStockInput.value = product.stock;
     prodDescInput.value = product.description || '';
@@ -606,6 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const category = prodCategoryInput.value;
     const price = parseFloat(prodPriceInput.value);
     const comboPrice = prodComboPriceInput ? parseFloat(prodComboPriceInput.value) || 0 : 0;
+    const comboMinQty = prodComboMinQtyInput ? parseInt(prodComboMinQtyInput.value) || 2 : 2;
     const description = prodDescInput.value.trim();
 
     // Assemble dynamic sizes list and sizeStocks nested object
@@ -656,6 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
       category,
       price,
       comboPrice,
+      comboMinQty,
       stock: totalStock,
       sizeStocks,
       description,
