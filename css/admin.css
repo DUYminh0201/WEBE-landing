@@ -326,7 +326,7 @@
 .form-row .form-group label {
   display: flex;
   align-items: flex-end;
-  min-height: 34px;
+  min-height: 44px;
 }
 
 /* Variant Pickers (Size checkboxes & Custom color picker tags) */
