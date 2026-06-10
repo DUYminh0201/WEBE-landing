@@ -1394,6 +1394,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (checkoutTotalAmount) checkoutTotalAmount.textContent = `$${finalTotal.toFixed(2)}`;
 
+    // Close cart drawer first
+    closeCart();
+
     // Open checkout modal
     checkoutModal.classList.add('active');
     lockBodyScroll();
