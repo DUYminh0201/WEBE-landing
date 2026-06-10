@@ -123,6 +123,10 @@ function initDB() {
           p.comboMinQty = 2;
           migrated = true;
         }
+        if (p.comboPrice && !p.combos) {
+          p.combos = [{ minQty: p.comboMinQty || 2, price: p.comboPrice }];
+          migrated = true;
+        }
         if (!p.gender) {
           p.gender = 'Unisex';
           migrated = true;

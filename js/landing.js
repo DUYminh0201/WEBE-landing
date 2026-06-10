@@ -1023,6 +1023,27 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCart();
   }
 
+  // Smart Helper to get unit price based on quantity and configured combo tiers
+  function getProductUnitPrice(dbProduct, totalQty) {
+    if (!dbProduct) return 0;
+    if (dbProduct.combos && dbProduct.combos.length > 0) {
+      const sortedCombos = [...dbProduct.combos].sort((a, b) => b.minQty - a.minQty);
+      const activeCombo = sortedCombos.find(c => totalQty >= c.minQty);
+      if (activeCombo) {
+        return parseFloat(activeCombo.price);
+      }
+    } else if (dbProduct.comboPrice) {
+      const minQty = dbProduct.comboMinQty || 2;
+      if (totalQty >= minQty) {
+        const bundles = Math.floor(totalQty / minQty);
+        const single = totalQty % minQty;
+        const totalProductPrice = (bundles * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
+        return totalProductPrice / totalQty;
+      }
+    }
+    return parseFloat(dbProduct.price);
+  }
+
   function calculateCartTotal() {
     const prodQtyMap = {};
     cart.forEach(item => {

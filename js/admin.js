@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Active state trackers for product creation
   let selectedColors = [];
+  let selectedCombos = []; // Array of { minQty, price }
   let selectedImages = [];
   let currentDeleteId = null;
 
@@ -91,6 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const prodDescInput = document.getElementById('prodDesc');
   const prodColorInput = document.getElementById('prodColorInput');
   const btnAddColor = document.getElementById('btnAddColor');
+  const btnAddCombo = document.getElementById('btnAddCombo');
+  const comboTagsList = document.getElementById('comboTagsList');
   const colorTagsList = document.getElementById('colorTagsList');
   const colorStockContainer = document.getElementById('colorStockContainer');
   const imageDropzone = document.getElementById('imageDropzone');
@@ -167,6 +170,21 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================
      METRICS & DATA RENDERING
      ========================================== */
+  // Helper to format price and multi-combo tiers
+  function getPriceDisplayHTML(p) {
+    let html = `<strong>Retail: $${parseFloat(p.price).toFixed(2)}</strong>`;
+    if (p.combos && p.combos.length > 0) {
+      html += '<div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px; font-size: 0.75rem; color: var(--accent);">';
+      p.combos.forEach(c => {
+        html += `<span style="font-weight: 600; white-space: nowrap;">Combo ${c.minQty}+: $${parseFloat(c.price).toFixed(2)}</span>`;
+      });
+      html += '</div>';
+    } else if (p.comboPrice) {
+      html += `<br><span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Combo: $${parseFloat(p.comboPrice).toFixed(2)}</span>`;
+    }
+    return html;
+  }
+
   function renderMetrics() {
     const products = window.db.getProducts();
     
@@ -223,9 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       recent.forEach(p => {
         const thumb = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150';
-        const priceLabel = p.comboPrice 
-          ? `Retail: $${parseFloat(p.price).toFixed(2)}<br><span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Combo: $${parseFloat(p.comboPrice).toFixed(2)}</span>`
-          : `$${parseFloat(p.price).toFixed(2)}`;
+        const priceLabel = getPriceDisplayHTML(p);
           
         let stockBreakdown = '';
         if (p.sizeStocks) {
@@ -306,9 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '</span>';
         }
 
-        const priceLabel = p.comboPrice 
-          ? `Retail: $${parseFloat(p.price).toFixed(2)}<br><span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Combo: $${parseFloat(p.comboPrice).toFixed(2)}</span>`
-          : `$${parseFloat(p.price).toFixed(2)}`;
+        const priceLabel = getPriceDisplayHTML(p);
 
         allProductsTable.innerHTML += `
           <tr>
@@ -425,6 +439,62 @@ document.addEventListener('DOMContentLoaded', () => {
           if (prodGenderInput) prodGenderInput.value = parts[1];
         }
       }
+    });
+  }
+
+  // Combo Pricing Tiers Logic
+  if (btnAddCombo && comboTagsList) {
+    btnAddCombo.addEventListener('click', () => {
+      const qtyVal = parseInt(prodComboMinQtyInput.value);
+      const priceVal = parseFloat(prodComboPriceInput.value);
+      
+      if (isNaN(qtyVal) || qtyVal < 2) {
+        showToast('Số lượng tối thiểu của Combo phải từ 2 trở lên!', 'error');
+        return;
+      }
+      if (isNaN(priceVal) || priceVal < 0) {
+        showToast('Giá Combo phải là số hợp lệ từ 0 trở lên!', 'error');
+        return;
+      }
+      
+      const existsIdx = selectedCombos.findIndex(c => c.minQty === qtyVal);
+      if (existsIdx !== -1) {
+        selectedCombos[existsIdx].price = priceVal;
+      } else {
+        selectedCombos.push({ minQty: qtyVal, price: priceVal });
+      }
+      
+      selectedCombos.sort((a, b) => a.minQty - b.minQty);
+      renderComboTags();
+      
+      prodComboMinQtyInput.value = '';
+      prodComboPriceInput.value = '';
+    });
+  }
+
+  function renderComboTags() {
+    if (!comboTagsList) return;
+    comboTagsList.innerHTML = '';
+    selectedCombos.forEach((combo, idx) => {
+      const item = document.createElement('div');
+      item.className = 'color-tag-item';
+      item.style.backgroundColor = 'rgba(79, 70, 229, 0.08)';
+      item.style.borderColor = 'rgba(79, 70, 229, 0.2)';
+      
+      item.innerHTML = `
+        <span style="font-weight: 600; color: var(--accent); margin-right: 4px;">Combo ${combo.minQty}+ :</span>
+        <span style="font-weight: 700;">$${combo.price.toFixed(2)}</span>
+        <span class="combo-tag-remove" data-index="${idx}" style="cursor: pointer; margin-left: 8px; font-weight: bold; color: var(--text-muted);">&times;</span>
+      `;
+      comboTagsList.appendChild(item);
+    });
+    
+    document.querySelectorAll('.combo-tag-remove').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const index = parseInt(e.target.getAttribute('data-index'));
+        selectedCombos.splice(index, 1);
+        renderComboTags();
+      });
     });
   }
 
@@ -561,6 +631,8 @@ document.addEventListener('DOMContentLoaded', () => {
       prodGenderInput.value = 'Unisex';
     }
     selectedColors = [];
+    selectedCombos = [];
+    renderComboTags();
     selectedImages = [];
     renderColorTags();
     renderImagePreviews();
@@ -598,6 +670,13 @@ document.addEventListener('DOMContentLoaded', () => {
     prodStockInput.value = product.stock;
     prodDescInput.value = product.description || '';
     
+    // Combos
+    selectedCombos = [...(product.combos || [])];
+    if (selectedCombos.length === 0 && product.comboPrice) {
+      selectedCombos.push({ minQty: product.comboMinQty || 2, price: product.comboPrice });
+    }
+    renderComboTags();
+
     // Colors
     selectedColors = [...(product.colors || [])];
     renderColorTags();
@@ -702,8 +781,9 @@ document.addEventListener('DOMContentLoaded', () => {
       category,
       gender,
       price,
-      comboPrice,
-      comboMinQty,
+      comboPrice: selectedCombos[0] ? selectedCombos[0].price : 0,
+      comboMinQty: selectedCombos[0] ? selectedCombos[0].minQty : 2,
+      combos: selectedCombos,
       stock: totalStock,
       sizeStocks,
       description,
