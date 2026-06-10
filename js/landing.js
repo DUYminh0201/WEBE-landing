@@ -1099,6 +1099,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // bind continue shopping click
       document.getElementById('btnContinueShopping').addEventListener('click', closeCart);
       cartSubtotal.textContent = '$0.00';
+      if (cartShipping) cartShipping.textContent = '$0.00';
+      if (cartTotal) cartTotal.textContent = '$0.00';
       return;
     }
 
