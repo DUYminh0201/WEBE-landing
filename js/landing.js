@@ -893,6 +893,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderQuickViewSizes(product, qvSelectedColor);
 
     quickViewModal.classList.add('active');
+    lockBodyScroll();
   }
 
   function closeQVModal() {
@@ -900,6 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
     activeQuickViewProduct = null;
     qvSelectedColor = null;
     qvSelectedSize = null;
+    unlockBodyScroll();
   }
 
   btnCloseQVModal.addEventListener('click', closeQVModal);
@@ -912,17 +914,49 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================
+     SCROLL LOCK: prevents background scroll when any panel is open
+     ========================================== */
+  let _scrollLockCount = 0;
+  let _savedScrollY = 0;
+
+  function lockBodyScroll() {
+    _scrollLockCount++;
+    if (_scrollLockCount === 1) {
+      _savedScrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${_savedScrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.overflowY = 'scroll'; // keep scrollbar space to avoid layout shift
+    }
+  }
+
+  function unlockBodyScroll() {
+    if (_scrollLockCount > 0) _scrollLockCount--;
+    if (_scrollLockCount === 0) {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflowY = '';
+      window.scrollTo(0, _savedScrollY);
+    }
+  }
+
+  /* ==========================================
      CART DRAWER LOGIC
      ========================================== */
   function openCart() {
     renderCart();
     cartDrawer.classList.add('active');
     cartOverlay.classList.add('active');
+    lockBodyScroll();
   }
 
   function closeCart() {
     cartDrawer.classList.remove('active');
     cartOverlay.classList.remove('active');
+    unlockBodyScroll();
   }
 
   btnOpenCart.addEventListener('click', openCart);
@@ -1350,12 +1384,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Open checkout modal
     checkoutModal.classList.add('active');
+    lockBodyScroll();
   });
 
   // Close checkout modal
   function closeCheckoutModal() {
     checkoutModal.classList.remove('active');
     checkoutForm.reset();
+    unlockBodyScroll();
   }
 
   btnCloseCheckoutModal.addEventListener('click', closeCheckoutModal);
