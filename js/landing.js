@@ -999,6 +999,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!dbProduct) return;
 
     const color = cart[itemIndex].color;
+    const size = cart[itemIndex].size;
     let sizeStock = dbProduct.stock; // fallback
     if (dbProduct.sizeStocks) {
       if (dbProduct.sizeStocks[color] !== undefined) {
@@ -1058,17 +1059,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const dbProduct = window.db.getProductById(item.productId);
       const qty = prodQtyMap[item.productId];
-      const minQty = dbProduct && dbProduct.comboMinQty ? parseInt(dbProduct.comboMinQty) : 2;
-
-      if (dbProduct && dbProduct.comboPrice && qty >= minQty) {
-        const bundles = Math.floor(qty / minQty);
-        const single = qty % minQty;
-        total += (bundles * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
-      } else {
-        cart.filter(i => i.productId === item.productId).forEach(i => {
-          total += parseFloat(i.price) * i.qty;
-        });
-      }
+      
+      const unitPrice = getProductUnitPrice(dbProduct, qty);
+      total += unitPrice * qty;
     });
     return total;
   }
@@ -1113,15 +1106,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      const actualUnitPrice = getProductUnitPrice(dbProduct, totalProductQty);
+      const isComboApplied = actualUnitPrice < parseFloat(item.price);
+      
       let priceDisplay = '';
-      if (isCombo) {
-        const bundles = Math.floor(totalProductQty / minQty);
-        const single = totalProductQty % minQty;
-        const totalProductPrice = (bundles * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
-        
-        // Average unit price to apportion this line total
-        const avgUnitPrice = totalProductPrice / totalProductQty;
-        const lineTotal = avgUnitPrice * item.qty;
+      if (isComboApplied) {
+        const lineTotal = actualUnitPrice * item.qty;
         const lineRetailTotal = parseFloat(item.price) * item.qty;
 
         priceDisplay = `
@@ -1294,16 +1284,7 @@ document.addEventListener('DOMContentLoaded', () => {
       items: cart.map(item => {
         const dbProduct = window.db.getProductById(item.productId);
         const totalProductQty = prodQtyMap[item.productId];
-        const minQty = dbProduct && dbProduct.comboMinQty ? parseInt(dbProduct.comboMinQty) : 2;
-        const isCombo = dbProduct && dbProduct.comboPrice && totalProductQty >= minQty;
-        
-        let actualPrice = parseFloat(item.price);
-        if (isCombo) {
-          const bundles = Math.floor(totalProductQty / minQty);
-          const single = totalProductQty % minQty;
-          const totalProductPrice = (bundles * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
-          actualPrice = totalProductPrice / totalProductQty;
-        }
+        const actualPrice = getProductUnitPrice(dbProduct, totalProductQty);
         
         return {
           ...item,
