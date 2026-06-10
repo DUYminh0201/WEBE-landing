@@ -247,13 +247,47 @@
                 </svg>
                 Cấu hình GG Sheet
               </button>
-              <button class="btn btn-primary" id="btnSyncSelectedOrders" style="height: 44px; padding: 0 16px; font-size: 0.85rem;">
-                <!-- Sync Cloud Icon SVG -->
-                <svg style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 4px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"></path>
-                </svg>
-                Đồng bộ GG Sheet
-              </button>
+              <!-- Bulk Actions Dropdown -->
+              <div class="bulk-dropdown" id="bulkActionsDropdown">
+                <button type="button" class="btn btn-primary" id="btnBulkActions" style="height: 44px; padding: 0 16px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;" disabled>
+                  <!-- List Bullet Icon SVG -->
+                  <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                  </svg>
+                  <span>Thao tác hàng loạt (0)</span>
+                  <!-- Arrow Down Icon SVG -->
+                  <svg style="width: 12px; height: 12px; transition: transform 0.2s;" id="arrowIcon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <div class="bulk-dropdown-menu" id="bulkActionsMenu">
+                  <button type="button" class="bulk-dropdown-item" id="btnBulkSync">
+                    <svg style="width: 16px; height: 16px; color: var(--accent);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"></path>
+                    </svg>
+                    Đồng bộ Google Sheets
+                  </button>
+                  <button type="button" class="bulk-dropdown-item" id="btnBulkMarkSynced">
+                    <svg style="width: 16px; height: 16px; color: var(--success);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Đánh dấu Đã đồng bộ
+                  </button>
+                  <button type="button" class="bulk-dropdown-item" id="btnBulkMarkUnsynced">
+                    <svg style="width: 16px; height: 16px; color: var(--warning);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    Đánh dấu Chưa đồng bộ
+                  </button>
+                  <div style="border-top: 1px solid var(--border-color); margin: 4px 0;"></div>
+                  <button type="button" class="bulk-dropdown-item danger-action" id="btnBulkDelete">
+                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Xóa các đơn đã chọn
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

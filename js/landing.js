@@ -1247,4 +1247,9 @@ document.addEventListener('DOMContentLoaded', () => {
       renderProducts();
     }
   });
+
+  // Listen to database errors
+  document.addEventListener('db-error', (e) => {
+    showToast(e.detail.message, 'error');
+  });
 });

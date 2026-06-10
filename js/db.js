@@ -265,13 +265,26 @@ const db = {
       if (pId) {
         delete data.id;
         data.updatedAt = Date.now();
-        window.firebaseDb.collection('products').doc(pId).set(data, { merge: true });
+        // Merge with existing cached product fields to preserve createdAt, etc.
+        const existing = this.getProductById(pId);
+        const finalData = { ...existing, ...data };
+        delete finalData.id;
+        // Overwrite without merge:true to correctly delete removed fields (like sizeStocks color keys)
+        window.firebaseDb.collection('products').doc(pId).set(finalData)
+          .catch(error => {
+            console.error("Failed to save product to Firestore:", error);
+            document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi lưu dữ liệu: " + error.message } }));
+          });
       } else {
         pId = 'prod_' + Math.random().toString(36).substr(2, 9);
         product.id = pId;
         delete data.id;
         data.createdAt = Date.now();
-        window.firebaseDb.collection('products').doc(pId).set(data);
+        window.firebaseDb.collection('products').doc(pId).set(data)
+          .catch(error => {
+            console.error("Failed to add product to Firestore:", error);
+            document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi thêm sản phẩm: " + error.message } }));
+          });
       }
       return product;
     }
@@ -300,7 +313,11 @@ const db = {
 
   deleteProduct(id) {
     if (window.firebaseEnabled) {
-      window.firebaseDb.collection('products').doc(id).delete();
+      window.firebaseDb.collection('products').doc(id).delete()
+        .catch(error => {
+          console.error("Failed to delete product from Firestore:", error);
+          document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi xóa sản phẩm: " + error.message } }));
+        });
       return true;
     }
 
@@ -345,7 +362,11 @@ const db = {
     if (window.firebaseEnabled) {
       window.firebaseDb.collection('settings').doc('global').set({
         adminPassword: newPassword
-      }, { merge: true });
+      }, { merge: true })
+        .catch(error => {
+          console.error("Failed to change password in Firestore:", error);
+          document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi đổi mật khẩu: " + error.message } }));
+        });
       return true;
     }
 
@@ -378,14 +399,22 @@ const db = {
       if (oId) {
         delete data.id;
         data.updatedAt = Date.now();
-        window.firebaseDb.collection('orders').doc(oId).set(data, { merge: true });
+        window.firebaseDb.collection('orders').doc(oId).set(data, { merge: true })
+          .catch(error => {
+            console.error("Failed to save order to Firestore:", error);
+            document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi lưu đơn hàng: " + error.message } }));
+          });
       } else {
         oId = 'ord_' + Math.random().toString(36).substr(2, 9).toUpperCase();
         order.id = oId;
         delete data.id;
         data.createdAt = Date.now();
         data.synced = false;
-        window.firebaseDb.collection('orders').doc(oId).set(data);
+        window.firebaseDb.collection('orders').doc(oId).set(data)
+          .catch(error => {
+            console.error("Failed to create order in Firestore:", error);
+            document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi đặt hàng: " + error.message } }));
+          });
       }
       return order;
     }
@@ -410,6 +439,23 @@ const db = {
     return order;
   },
 
+  deleteOrder(id) {
+    if (window.firebaseEnabled) {
+      window.firebaseDb.collection('orders').doc(id).delete()
+        .catch(error => {
+          console.error("Failed to delete order from Firestore:", error);
+          document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi xóa đơn hàng: " + error.message } }));
+        });
+      return true;
+    }
+
+    let orders = this.getOrders();
+    const originalLength = orders.length;
+    orders = orders.filter(o => o.id !== id);
+    localStorage.setItem('fashion_store_orders', JSON.stringify(orders));
+    return orders.length < originalLength;
+  },
+
   getGoogleSheetsUrl() {
     if (window.firebaseEnabled) {
       return dbCaches.settings.googleSheetsUrl || '';
@@ -421,7 +467,11 @@ const db = {
     if (window.firebaseEnabled) {
       window.firebaseDb.collection('settings').doc('global').set({
         googleSheetsUrl: url.trim()
-      }, { merge: true });
+      }, { merge: true })
+        .catch(error => {
+          console.error("Failed to save Google Sheets URL to Firestore:", error);
+          document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi lưu cấu hình Google Sheets: " + error.message } }));
+        });
       return true;
     }
 

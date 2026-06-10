@@ -2,6 +2,45 @@
  * Admin Dashboard Interactivity & CRUD Controls
  */
 
+// Utility function to compress images before base64 storage
+function compressImage(file, maxWidth, maxHeight, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedBase64);
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Check auth
   if (!window.db.isAdminLoggedIn()) {
@@ -444,12 +483,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        selectedImages.push(e.target.result); // Base64 string representation
-        renderImagePreviews();
-      };
-      reader.readAsDataURL(file);
+      compressImage(file, 800, 800, 0.7)
+        .then(compressedBase64 => {
+          selectedImages.push(compressedBase64);
+          renderImagePreviews();
+        })
+        .catch(err => {
+          console.error("Lỗi nén ảnh:", err);
+          showToast('Có lỗi xảy ra khi nén và tải ảnh lên!', 'error');
+        });
     });
   }
 
@@ -681,7 +723,14 @@ document.addEventListener('DOMContentLoaded', () => {
      ========================================== */
   const allOrdersTable = document.getElementById('allOrdersTable') ? document.getElementById('allOrdersTable').querySelector('tbody') : null;
   const selectAllOrdersCheckbox = document.getElementById('selectAllOrders');
-  const btnSyncSelectedOrders = document.getElementById('btnSyncSelectedOrders');
+  
+  // Bulk Actions elements
+  const btnBulkActions = document.getElementById('btnBulkActions');
+  const bulkActionsMenu = document.getElementById('bulkActionsMenu');
+  const btnBulkSync = document.getElementById('btnBulkSync');
+  const btnBulkMarkSynced = document.getElementById('btnBulkMarkSynced');
+  const btnBulkMarkUnsynced = document.getElementById('btnBulkMarkUnsynced');
+  const btnBulkDelete = document.getElementById('btnBulkDelete');
   
   // Sheet settings modals
   const sheetSettingsModal = document.getElementById('sheetSettingsModal');
@@ -783,7 +832,8 @@ document.addEventListener('DOMContentLoaded', () => {
       cb.addEventListener('change', () => {
         const checkedCount = document.querySelectorAll('.order-checkbox:checked').length;
         const totalCheckboxes = document.querySelectorAll('.order-checkbox').length;
-        selectAllOrdersCheckbox.checked = checkedCount === totalCheckboxes;
+        if (selectAllOrdersCheckbox) selectAllOrdersCheckbox.checked = checkedCount === totalCheckboxes && totalCheckboxes > 0;
+        updateBulkActionsState();
       });
     });
 
@@ -800,14 +850,31 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-id');
         if (confirm(`Bạn có chắc chắn muốn xóa đơn hàng "${id}" không? Thao tác này không thể hoàn tác.`)) {
-          const orders = window.db.getOrders().filter(o => o.id !== id);
-          localStorage.setItem('fashion_store_orders', JSON.stringify(orders));
-          showToast('Đã xóa đơn hàng thành công!', 'success');
+          if (window.db.deleteOrder(id)) {
+            showToast('Đã xóa đơn hàng thành công!', 'success');
+          } else {
+            showToast('Có lỗi xảy ra khi xóa đơn hàng!', 'error');
+          }
           renderMetrics();
           renderOrdersTable();
         }
       });
     });
+
+    // Reset bulk actions state on render
+    updateBulkActionsState();
+  }
+
+  // Helper to update bulk actions dropdown button state and count
+  function updateBulkActionsState() {
+    const checkedCount = document.querySelectorAll('.order-checkbox:checked').length;
+    if (btnBulkActions) {
+      btnBulkActions.disabled = checkedCount === 0;
+      const span = btnBulkActions.querySelector('span');
+      if (span) {
+        span.textContent = `Thao tác hàng loạt (${checkedCount})`;
+      }
+    }
   }
 
   // Handle select-all checkbox change
@@ -817,6 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.order-checkbox').forEach(cb => {
         cb.checked = isChecked;
       });
+      updateBulkActionsState();
     });
   }
 
@@ -924,14 +992,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Perform actual sync
-    const originalBtnHtml = btnSyncSelectedOrders.innerHTML;
-    btnSyncSelectedOrders.disabled = true;
-    btnSyncSelectedOrders.innerHTML = `
-      <svg style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 4px; animation: spin 1s linear infinite;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"></path>
-      </svg>
-      Đang đồng bộ...
-    `;
+    const btnTarget = document.getElementById('btnBulkSync') || btnBulkActions;
+    const originalBtnHtml = btnTarget ? btnTarget.innerHTML : '';
+    if (btnTarget) {
+      btnTarget.disabled = true;
+      btnTarget.innerHTML = `
+        <svg style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 4px; animation: spin 1s linear infinite;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"></path>
+        </svg>
+        Đang đồng bộ...
+      `;
+    }
 
     let successCount = 0;
     let failCount = 0;
@@ -961,8 +1032,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Restore button
-    btnSyncSelectedOrders.disabled = false;
-    btnSyncSelectedOrders.innerHTML = originalBtnHtml;
+    if (btnTarget) {
+      btnTarget.disabled = false;
+      btnTarget.innerHTML = originalBtnHtml;
+    }
 
     if (successCount > 0) {
       showToast(`Đã đồng bộ thành công ${successCount} đơn hàng lên Google Sheets!`, 'success');
@@ -979,29 +1052,107 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOrdersTable();
   }
 
-  // Hook sync selected orders button click
-  if (btnSyncSelectedOrders) {
-    btnSyncSelectedOrders.addEventListener('click', () => {
-      const selectedIds = [];
-      document.querySelectorAll('.order-checkbox:checked').forEach(cb => {
-        selectedIds.push(cb.getAttribute('data-id'));
+  // Helper to get checked order IDs
+  function getSelectedOrderIds() {
+    const ids = [];
+    document.querySelectorAll('.order-checkbox:checked').forEach(cb => {
+      ids.push(cb.getAttribute('data-id'));
+    });
+    return ids;
+  }
+
+  // Toggle Bulk Actions dropdown menu visibility
+  if (btnBulkActions && bulkActionsMenu) {
+    btnBulkActions.addEventListener('click', (e) => {
+      e.stopPropagation();
+      bulkActionsMenu.classList.toggle('active');
+      const arrowIcon = document.getElementById('arrowIcon');
+      if (arrowIcon) {
+        arrowIcon.style.transform = bulkActionsMenu.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+    });
+
+    document.addEventListener('click', () => {
+      bulkActionsMenu.classList.remove('active');
+      const arrowIcon = document.getElementById('arrowIcon');
+      if (arrowIcon) {
+        arrowIcon.style.transform = 'rotate(0deg)';
+      }
+    });
+  }
+
+  // Hook Bulk Sync menu option click
+  if (btnBulkSync) {
+    btnBulkSync.addEventListener('click', () => {
+      const ids = getSelectedOrderIds();
+      syncOrders(ids);
+    });
+  }
+
+  // Hook Bulk Mark Synced menu option click
+  if (btnBulkMarkSynced) {
+    btnBulkMarkSynced.addEventListener('click', () => {
+      const ids = getSelectedOrderIds();
+      if (ids.length === 0) return;
+
+      let successCount = 0;
+      ids.forEach(id => {
+        const order = window.db.getOrderById(id);
+        if (order && !order.synced) {
+          order.synced = true;
+          window.db.saveOrder(order);
+          successCount++;
+        }
       });
-      
-      if (selectedIds.length === 0) {
-        // Offer to sync all unsynced if none checked
-        const unsyncedOrders = window.db.getOrders().filter(o => !o.synced);
-        if (unsyncedOrders.length === 0) {
-          showToast('Tất cả đơn hàng hiện tại đã được đồng bộ!', 'success');
-          return;
+
+      showToast(`Đã đánh dấu đồng bộ ${successCount} đơn hàng thành công!`, 'success');
+      if (selectAllOrdersCheckbox) selectAllOrdersCheckbox.checked = false;
+      renderMetrics();
+      renderOrdersTable();
+    });
+  }
+
+  // Hook Bulk Mark Unsynced menu option click
+  if (btnBulkMarkUnsynced) {
+    btnBulkMarkUnsynced.addEventListener('click', () => {
+      const ids = getSelectedOrderIds();
+      if (ids.length === 0) return;
+
+      let successCount = 0;
+      ids.forEach(id => {
+        const order = window.db.getOrderById(id);
+        if (order && order.synced) {
+          order.synced = false;
+          window.db.saveOrder(order);
+          successCount++;
         }
-        
-        const confirmAll = confirm(`Bạn chưa chọn đơn hàng nào. Bạn có muốn đồng bộ TẤT CẢ ${unsyncedOrders.length} đơn hàng chưa đồng bộ không?`);
-        if (confirmAll) {
-          const ids = unsyncedOrders.map(o => o.id);
-          syncOrders(ids);
-        }
-      } else {
-        syncOrders(selectedIds);
+      });
+
+      showToast(`Đã hủy trạng thái đồng bộ ${successCount} đơn hàng!`, 'success');
+      if (selectAllOrdersCheckbox) selectAllOrdersCheckbox.checked = false;
+      renderMetrics();
+      renderOrdersTable();
+    });
+  }
+
+  // Hook Bulk Delete menu option click
+  if (btnBulkDelete) {
+    btnBulkDelete.addEventListener('click', () => {
+      const ids = getSelectedOrderIds();
+      if (ids.length === 0) return;
+
+      if (confirm(`Bạn có chắc chắn muốn xóa ${ids.length} đơn đặt hàng đã chọn không? Thao tác này không thể hoàn tác.`)) {
+        let successCount = 0;
+        ids.forEach(id => {
+          if (window.db.deleteOrder(id)) {
+            successCount++;
+          }
+        });
+        showToast(`Đã xóa thành công ${successCount}/${ids.length} đơn hàng!`, 'success');
+
+        if (selectAllOrdersCheckbox) selectAllOrdersCheckbox.checked = false;
+        renderMetrics();
+        renderOrdersTable();
       }
     });
   }
@@ -1093,4 +1244,9 @@ document.addEventListener('DOMContentLoaded', () => {
       input.addEventListener('input', updateAdminTotalStock);
     });
   }
+
+  // Listen to database errors
+  document.addEventListener('db-error', (e) => {
+    showToast(e.detail.message, 'error');
+  });
 });
