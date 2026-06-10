@@ -1333,4 +1333,46 @@
   border-color: var(--accent);
 }
 
+/* ==========================================
+   FLYING DOT ADD-TO-CART ANIMATION
+   ========================================== */
+.fly-dot {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(214, 175, 55, 0.9), 0 0 18px rgba(214, 175, 55, 0.4);
+  transform: translate(-50%, -50%);
+  transition: none;
+}
+
+/* Cart icon bounce when receiving item */
+@keyframes cart-bounce {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.45); }
+  55%  { transform: scale(0.88); }
+  75%  { transform: scale(1.18); }
+  90%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+.cart-trigger.bounce {
+  animation: cart-bounce 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Badge pulse */
+@keyframes badge-pulse {
+  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 175, 55, 0.7); }
+  50%  { transform: scale(1.4); box-shadow: 0 0 0 6px rgba(214, 175, 55, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 175, 55, 0); }
+}
+
+.cart-count.pulse {
+  animation: badge-pulse 0.55s ease-out;
+}
+
+
 

@@ -929,6 +929,75 @@ document.addEventListener('DOMContentLoaded', () => {
   btnCloseCart.addEventListener('click', closeCart);
   cartOverlay.addEventListener('click', closeCart);
 
+  /**
+   * Fly-to-cart animation: fires a glowing dot from `originEl` to the cart icon.
+   * Uses Web Animations API for a smooth parabolic arc.
+   */
+  function flyToCart(originEl) {
+    const cartBtn = document.getElementById('btnOpenCart');
+    if (!cartBtn || !originEl) return;
+
+    const originRect  = originEl.getBoundingClientRect();
+    const targetRect  = cartBtn.getBoundingClientRect();
+
+    // Start position: center of the origin button
+    const startX = originRect.left + originRect.width  / 2;
+    const startY = originRect.top  + originRect.height / 2;
+
+    // End position: center of cart icon
+    const endX = targetRect.left + targetRect.width  / 2;
+    const endY = targetRect.top  + targetRect.height / 2;
+
+    const dot = document.createElement('div');
+    dot.className = 'fly-dot';
+    dot.style.left = startX + 'px';
+    dot.style.top  = startY + 'px';
+    document.body.appendChild(dot);
+
+    // Arc control point (above the midpoint for a nice upward curve)
+    const midX = (startX + endX) / 2;
+    const midY = Math.min(startY, endY) - Math.abs(endX - startX) * 0.35;
+
+    const DURATION = 680; // ms
+    const FPS = 60;
+    const FRAMES = Math.round(DURATION / (1000 / FPS));
+    let frame = 0;
+
+    const timer = setInterval(() => {
+      frame++;
+      const t = frame / FRAMES;
+      if (t >= 1) {
+        clearInterval(timer);
+        dot.remove();
+        // Trigger bounce + badge pulse on cart icon
+        const cartTrigger = cartBtn.closest('.cart-trigger') || cartBtn;
+        const badge = document.getElementById('cartBadge');
+        cartTrigger.classList.remove('bounce');
+        void cartTrigger.offsetWidth; // reflow
+        cartTrigger.classList.add('bounce');
+        if (badge) {
+          badge.classList.remove('pulse');
+          void badge.offsetWidth;
+          badge.classList.add('pulse');
+        }
+        cartTrigger.addEventListener('animationend', () => cartTrigger.classList.remove('bounce'), { once: true });
+        if (badge) badge.addEventListener('animationend', () => badge.classList.remove('pulse'), { once: true });
+        return;
+      }
+
+      // Quadratic Bezier: B(t) = (1-t)^2*P0 + 2(1-t)t*P1 + t^2*P2
+      const u = 1 - t;
+      const x = u*u*startX + 2*u*t*midX + t*t*endX;
+      const y = u*u*startY + 2*u*t*midY + t*t*endY;
+      const scale = 1 - t * 0.7; // shrinks toward cart icon
+
+      dot.style.left = x + 'px';
+      dot.style.top  = y + 'px';
+      dot.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      dot.style.opacity = scale;
+    }, 1000 / FPS);
+  }
+
   function saveCart() {
     localStorage.setItem('fashion_store_cart', JSON.stringify(cart));
     updateCartBadge();
@@ -1230,8 +1299,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const success = addToCart(activeQuickViewProduct, qvSelectedColor, qvSelectedSize, 1);
     if (success) {
       showToast(getTranslationText('toast_added'), 'success');
+      flyToCart(btnQVAddToCart); // Animate dot flying to cart icon
       closeQVModal();
-      setTimeout(openCart, 300); // Open the drawer after adding item
+      // Cart drawer only opens when user clicks the cart icon
     }
   });
 
