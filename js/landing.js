@@ -928,6 +928,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.left = '0';
       document.body.style.right = '0';
       document.body.style.overflowY = 'scroll'; // keep scrollbar space to avoid layout shift
+      // Keep navbar visible with solid background (body fixed resets scrollY to 0)
+      if (navbar) navbar.classList.add('scrolled');
     }
   }
 
@@ -940,6 +942,14 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.right = '';
       document.body.style.overflowY = '';
       window.scrollTo(0, _savedScrollY);
+      // Restore navbar state based on actual scroll position
+      if (navbar) {
+        if (_savedScrollY > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      }
     }
   }
 
