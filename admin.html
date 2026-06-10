@@ -356,24 +356,33 @@
           <input type="text" id="prodName" class="form-control" placeholder="Ví dụ: Jacket Da Lộn Cổ Bẻ" required>
         </div>
 
-        <div class="form-row" style="grid-template-columns: 1.2fr 1.2fr 1fr 1fr 1fr;">
+        <div class="form-row" style="grid-template-columns: 2.4fr 1fr 1fr 1fr;">
           <div class="form-group">
-            <label for="prodCategory">Phân loại *</label>
-            <select id="prodCategory" class="form-control" required style="background: var(--bg-tertiary);">
-              <option value="Outerwear">Áo</option>
-              <option value="Trousers">Quần</option>
-              <option value="Footwear">Giày</option>
-              <option value="Accessories">Phụ kiện</option>
+            <label for="prodSmartCategory">Phân loại & Giới tính *</label>
+            <select id="prodSmartCategory" class="form-control" required style="background: var(--bg-tertiary);">
+              <optgroup label="Áo">
+                <option value="Outerwear_Unisex">Áo (Unisex)</option>
+                <option value="Outerwear_Men">Áo (Nam)</option>
+                <option value="Outerwear_Women">Áo (Nữ)</option>
+              </optgroup>
+              <optgroup label="Quần">
+                <option value="Trousers_Unisex">Quần (Unisex)</option>
+                <option value="Trousers_Men">Quần (Nam)</option>
+                <option value="Trousers_Women">Quần (Nữ)</option>
+              </optgroup>
+              <optgroup label="Giày">
+                <option value="Footwear_Unisex">Giày (Unisex)</option>
+                <option value="Footwear_Men">Giày (Nam)</option>
+                <option value="Footwear_Women">Giày (Nữ)</option>
+              </optgroup>
+              <optgroup label="Phụ kiện">
+                <option value="Accessories_Unisex">Phụ kiện (Unisex)</option>
+                <option value="Accessories_Men">Phụ kiện (Nam)</option>
+                <option value="Accessories_Women">Phụ kiện (Nữ)</option>
+              </optgroup>
             </select>
-          </div>
-
-          <div class="form-group">
-            <label for="prodGender">Dành cho *</label>
-            <select id="prodGender" class="form-control" required style="background: var(--bg-tertiary);">
-              <option value="Unisex">Unisex</option>
-              <option value="Men">Nam</option>
-              <option value="Women">Nữ</option>
-            </select>
+            <input type="hidden" id="prodCategory" value="Outerwear">
+            <input type="hidden" id="prodGender" value="Unisex">
           </div>
           
           <div class="form-group">

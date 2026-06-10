@@ -44,6 +44,53 @@
 .nav-links {
   display: flex;
   gap: 32px;
+  align-items: center;
+}
+
+.nav-item-dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 0;
+  min-width: 160px;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.dropdown-item {
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: left;
+  white-space: nowrap;
+  transition: var(--transition-fast);
+  display: block;
+}
+
+.dropdown-item:hover {
+  color: var(--accent);
+  background-color: var(--bg-tertiary);
 }
 
 .nav-link {
@@ -55,6 +102,7 @@
   color: var(--text-secondary);
   position: relative;
   padding: 6px 0;
+  display: block;
 }
 
 .nav-link::after {
@@ -329,6 +377,33 @@
   color: #ffffff;
   border-color: var(--accent);
   box-shadow: var(--shadow-accent);
+}
+
+/* Gender Filter Row Collapse/Expand Animation */
+#genderFilterRow {
+  max-height: 100px;
+  opacity: 1;
+  transform-origin: top;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.3s ease, 
+              margin-top 0.35s ease, 
+              margin-bottom 0.35s ease, 
+              padding-top 0.35s ease, 
+              padding-bottom 0.35s ease,
+              visibility 0.35s;
+  visibility: visible;
+  overflow: hidden;
+}
+
+#genderFilterRow.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* Responsive adjustments for Smart Filter */

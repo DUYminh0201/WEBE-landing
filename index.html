@@ -25,10 +25,42 @@
 
       <ul class="nav-links">
         <li><a href="#" class="nav-link active" data-filter="all" data-i18n="nav_all">Tất Cả</a></li>
-        <li><a href="#" class="nav-link" data-filter="Outerwear" data-i18n="nav_outerwear">Áo</a></li>
-        <li><a href="#" class="nav-link" data-filter="Trousers" data-i18n="nav_trousers">Quần</a></li>
-        <li><a href="#" class="nav-link" data-filter="Footwear" data-i18n="nav_footwear">Giày</a></li>
-        <li><a href="#" class="nav-link" data-filter="Accessories" data-i18n="nav_accessories">Phụ kiện</a></li>
+        
+        <li class="nav-item-dropdown">
+          <a href="#" class="nav-link" data-filter="Outerwear" data-i18n="nav_outerwear">Áo</a>
+          <ul class="dropdown-menu">
+            <li><a href="#" class="dropdown-item" data-filter="Outerwear" data-gender="Men" data-i18n="nav_outerwear_men">Áo Nam</a></li>
+            <li><a href="#" class="dropdown-item" data-filter="Outerwear" data-gender="Women" data-i18n="nav_outerwear_women">Áo Nữ</a></li>
+            <li><a href="#" class="dropdown-item" data-filter="Outerwear" data-gender="all" data-i18n="nav_outerwear_all">Tất Cả Áo</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item-dropdown">
+          <a href="#" class="nav-link" data-filter="Trousers" data-i18n="nav_trousers">Quần</a>
+          <ul class="dropdown-menu">
+            <li><a href="#" class="dropdown-item" data-filter="Trousers" data-gender="Men" data-i18n="nav_trousers_men">Quần Nam</a></li>
+            <li><a href="#" class="dropdown-item" data-filter="Trousers" data-gender="Women" data-i18n="nav_trousers_women">Quần Nữ</a></li>
+            <li><a href="#" class="dropdown-item" data-filter="Trousers" data-gender="all" data-i18n="nav_trousers_all">Tất Cả Quần</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item-dropdown">
+          <a href="#" class="nav-link" data-filter="Footwear" data-i18n="nav_footwear">Giày</a>
+          <ul class="dropdown-menu">
+            <li><a href="#" class="dropdown-item" data-filter="Footwear" data-gender="Men" data-i18n="nav_footwear_men">Giày Nam</a></li>
+            <li><a href="#" class="dropdown-item" data-filter="Footwear" data-gender="Women" data-i18n="nav_footwear_women">Giày Nữ</a></li>
+            <li><a href="#" class="dropdown-item" data-filter="Footwear" data-gender="all" data-i18n="nav_footwear_all">Tất Cả Giày</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item-dropdown">
+          <a href="#" class="nav-link" data-filter="Accessories" data-i18n="nav_accessories">Phụ kiện</a>
+          <ul class="dropdown-menu">
+            <li><a href="#" class="dropdown-item" data-filter="Accessories" data-gender="Men" data-i18n="nav_accessories_men">Phụ kiện Nam</a></li>
+            <li><a href="#" class="dropdown-item" data-filter="Accessories" data-gender="Women" data-i18n="nav_accessories_women">Phụ kiện Nữ</a></li>
+            <li><a href="#" class="dropdown-item" data-filter="Accessories" data-gender="all" data-i18n="nav_accessories_all">Tất Cả Phụ kiện</a></li>
+          </ul>
+        </li>
       </ul>
 
       <div class="nav-actions">
@@ -99,17 +131,7 @@
 
         <!-- Dual Smart Filter Bar -->
         <div class="smart-filter-bar">
-          <!-- Row 1: Target Gender Filter -->
-          <div class="filter-row gender-filter-row">
-            <span class="filter-label" data-i18n="filter_target_label">Dành cho:</span>
-            <div class="filter-options">
-              <button class="filter-btn gender-btn active" data-gender="all" data-i18n="filter_target_all">Tất cả</button>
-              <button class="filter-btn gender-btn" data-gender="Men" data-i18n="filter_target_men">Nam</button>
-              <button class="filter-btn gender-btn" data-gender="Women" data-i18n="filter_target_women">Nữ</button>
-              <button class="filter-btn gender-btn" data-gender="Unisex" data-i18n="filter_target_unisex">Unisex</button>
-            </div>
-          </div>
-          <!-- Row 2: Product Category Filter -->
+          <!-- Row 1: Product Category Filter -->
           <div class="filter-row category-filter-row">
             <span class="filter-label" data-i18n="filter_category_label">Danh mục:</span>
             <div class="filter-options">
@@ -118,6 +140,16 @@
               <button class="filter-btn category-btn" data-category="Trousers" data-i18n="coll_tab_trousers">Quần</button>
               <button class="filter-btn category-btn" data-category="Footwear" data-i18n="coll_tab_footwear">Giày</button>
               <button class="filter-btn category-btn" data-category="Accessories" data-i18n="coll_tab_acc">Phụ kiện</button>
+            </div>
+          </div>
+          <!-- Row 2: Target Gender Filter (Dynamic sub-filter) -->
+          <div class="filter-row gender-filter-row" id="genderFilterRow">
+            <span class="filter-label" data-i18n="filter_target_label">Dành cho:</span>
+            <div class="filter-options">
+              <button class="filter-btn gender-btn active" data-gender="all" data-i18n="filter_target_all">Tất cả</button>
+              <button class="filter-btn gender-btn" data-gender="Men" data-i18n="filter_target_men">Nam</button>
+              <button class="filter-btn gender-btn" data-gender="Women" data-i18n="filter_target_women">Nữ</button>
+              <button class="filter-btn gender-btn" data-gender="Unisex" data-i18n="filter_target_unisex">Unisex</button>
             </div>
           </div>
         </div>

@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const prodNameInput = document.getElementById('prodName');
   const prodCategoryInput = document.getElementById('prodCategory');
   const prodGenderInput = document.getElementById('prodGender');
+  const prodSmartCategoryInput = document.getElementById('prodSmartCategory');
   const prodPriceInput = document.getElementById('prodPrice');
   const prodComboPriceInput = document.getElementById('prodComboPrice');
   const prodComboMinQtyInput = document.getElementById('prodComboMinQty');
@@ -241,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="table-product-name">${p.name}</span>
               </div>
             </td>
-            <td><span class="badge badge-primary">${translateCategory(p.category)}${p.gender ? ` (${translateGender(p.gender)})` : ''}</span></td>
+            <td><span class="badge badge-primary">${translateCategory(p.category)}${p.gender ? ` - ${translateGender(p.gender)}` : ''}</span></td>
             <td><strong>${priceLabel}</strong></td>
             <td>${p.stock > 10 ? p.stock : `<span style="color: var(--danger); font-weight: 600;">${p.stock} (Ít hàng)</span>`}${stockBreakdown}</td>
           </tr>
@@ -317,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="table-product-name">${p.name}</span>
               </div>
             </td>
-            <td><span class="badge badge-primary">${translateCategory(p.category)}${p.gender ? ` (${translateGender(p.gender)})` : ''}</span></td>
+            <td><span class="badge badge-primary">${translateCategory(p.category)}${p.gender ? ` - ${translateGender(p.gender)}` : ''}</span></td>
             <td><strong>${priceLabel}</strong></td>
             <td>${colorsHtml}</td>
             <td>${sizesHtml}</td>
@@ -411,6 +412,20 @@ document.addEventListener('DOMContentLoaded', () => {
       'cream': '#fffdec'
     };
     return map[name] || null;
+  }
+
+  // Smart Category Change Handler to sync hidden Category and Gender inputs
+  if (prodSmartCategoryInput) {
+    prodSmartCategoryInput.addEventListener('change', () => {
+      const val = prodSmartCategoryInput.value;
+      if (val) {
+        const parts = val.split('_');
+        if (parts.length === 2) {
+          if (prodCategoryInput) prodCategoryInput.value = parts[0];
+          if (prodGenderInput) prodGenderInput.value = parts[1];
+        }
+      }
+    });
   }
 
   // Colors Selector Logic
@@ -536,8 +551,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('modalProductTitle').textContent = 'Thêm Sản Phẩm Mới';
     editProductIdInput.value = '';
     productForm.reset();
-    if (prodComboMinQtyInput) {
-      prodComboMinQtyInput.value = 2;
+    if (prodSmartCategoryInput) {
+      prodSmartCategoryInput.value = 'Outerwear_Unisex';
+    }
+    if (prodCategoryInput) {
+      prodCategoryInput.value = 'Outerwear';
     }
     if (prodGenderInput) {
       prodGenderInput.value = 'Unisex';
@@ -566,6 +584,9 @@ document.addEventListener('DOMContentLoaded', () => {
     prodCategoryInput.value = product.category;
     if (prodGenderInput) {
       prodGenderInput.value = product.gender || 'Unisex';
+    }
+    if (prodSmartCategoryInput) {
+      prodSmartCategoryInput.value = `${product.category}_${product.gender || 'Unisex'}`;
     }
     prodPriceInput.value = product.price;
     if (prodComboPriceInput) {

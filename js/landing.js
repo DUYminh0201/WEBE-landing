@@ -74,6 +74,18 @@ document.addEventListener('DOMContentLoaded', () => {
       nav_trousers: "Quần",
       nav_footwear: "Giày",
       nav_accessories: "Phụ kiện",
+      nav_outerwear_men: "Áo Nam",
+      nav_outerwear_women: "Áo Nữ",
+      nav_outerwear_all: "Tất Cả Áo",
+      nav_trousers_men: "Quần Nam",
+      nav_trousers_women: "Quần Nữ",
+      nav_trousers_all: "Tất Cả Quần",
+      nav_footwear_men: "Giày Nam",
+      nav_footwear_women: "Giày Nữ",
+      nav_footwear_all: "Tất Cả Giày",
+      nav_accessories_men: "Phụ kiện Nam",
+      nav_accessories_women: "Phụ kiện Nữ",
+      nav_accessories_all: "Tất Cả Phụ kiện",
       hero_badge_new: "WEBE",
       hero_badge_season: "BST THỜI TRANG ĐƯƠNG ĐẠI UNISEX 2026",
       hero_title: 'Định Hình<br><span class="text-gold">Phong Cách</span><br>Đương Đại',
@@ -174,6 +186,18 @@ document.addEventListener('DOMContentLoaded', () => {
       nav_trousers: "Trousers",
       nav_footwear: "Footwear",
       nav_accessories: "Accessories",
+      nav_outerwear_men: "Men's Tops",
+      nav_outerwear_women: "Women's Tops",
+      nav_outerwear_all: "All Tops",
+      nav_trousers_men: "Men's Trousers",
+      nav_trousers_women: "Women's Trousers",
+      nav_trousers_all: "All Trousers",
+      nav_footwear_men: "Men's Footwear",
+      nav_footwear_women: "Women's Footwear",
+      nav_footwear_all: "All Footwear",
+      nav_accessories_men: "Men's Accessories",
+      nav_accessories_women: "Women's Accessories",
+      nav_accessories_all: "All Accessories",
       hero_badge_new: "WEBE",
       hero_badge_season: "UNISEX CONTEMPORARY COLLECTION 2026",
       hero_title: 'Define<br><span class="text-gold">Contemporary</span><br>Style',
@@ -274,6 +298,18 @@ document.addEventListener('DOMContentLoaded', () => {
       nav_trousers: "ខោវែង",
       nav_footwear: "ស្បែកជើង",
       nav_accessories: "គ្រឿងបន្លាស់",
+      nav_outerwear_men: "អាវបុរស",
+      nav_outerwear_women: "អាវនារី",
+      nav_outerwear_all: "អាវទាំងអស់",
+      nav_trousers_men: "ខោបុរស",
+      nav_trousers_women: "ខោនារី",
+      nav_trousers_all: "ខោទាំងអស់",
+      nav_footwear_men: "ស្បែកជើងបុរស",
+      nav_footwear_women: "ស្បែកជើងនារី",
+      nav_footwear_all: "ស្បែកជើងទាំងអស់",
+      nav_accessories_men: "គ្រឿងបន្លាស់បុរស",
+      nav_accessories_women: "គ្រឿងបន្លាស់នារី",
+      nav_accessories_all: "គ្រឿងបន្លាស់ទាំងអស់",
       hero_badge_new: "WEBE",
       hero_badge_season: "បណ្តុំសម្លៀកបំពាក់យូនីសេក ២០២៦",
       hero_title: 'កំណត់<br><span class="text-gold">ស្ទីលបច្ចុប្បន្ន</span><br>ភាពទាន់សម័យ',
@@ -507,9 +543,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const products = window.db.getProducts();
     
     // Filter logic
-    const filteredProducts = activeFilter === 'all' 
-      ? products 
-      : products.filter(p => p.category === activeFilter);
+    const filteredProducts = products.filter(p => {
+      const matchesCategory = activeCategoryFilter === 'all' || p.category === activeCategoryFilter;
+      let matchesGender = true;
+      if (activeGenderFilter !== 'all') {
+        if (activeGenderFilter === 'Men') {
+          matchesGender = p.gender === 'Men' || p.gender === 'Unisex';
+        } else if (activeGenderFilter === 'Women') {
+          matchesGender = p.gender === 'Women' || p.gender === 'Unisex';
+        } else {
+          matchesGender = p.gender === activeGenderFilter;
+        }
+      }
+      return matchesCategory && matchesGender;
+    });
 
     productsGrid.innerHTML = '';
 
@@ -532,6 +579,8 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (Date.now() - p.createdAt < 7 * 24 * 60 * 60 * 1000) {
         badgeHtml = `<span class="badge badge-primary product-card-badge">${getTranslationText('badge_new')}</span>`;
       }
+      
+  
 
       // Sizes display (join top 3 size tags)
       const sizesLabel = p.sizes && p.sizes.length > 0 
@@ -582,50 +631,100 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Filter tabs click handler
-  function updateActiveFilter(filter) {
-    activeFilter = filter;
-    
-    // Sync tabs
-    filterTabs.forEach(tab => {
-      if (tab.getAttribute('data-filter') === filter) {
-        tab.classList.add('active');
+  // Smart Category & Gender Filter UI Sync
+  function updateFilterUI() {
+    // 1. Sync category buttons in the filter bar
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      if (btn.getAttribute('data-category') === activeCategoryFilter) {
+        btn.classList.add('active');
       } else {
-        tab.classList.remove('active');
+        btn.classList.remove('active');
       }
     });
 
-    // Sync header links
+    // 2. Sync gender buttons in the filter bar
+    document.querySelectorAll('.gender-btn').forEach(btn => {
+      if (btn.getAttribute('data-gender') === activeGenderFilter) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    // 3. Sync header links
     navFilterLinks.forEach(link => {
-      if (link.getAttribute('data-filter') === filter) {
+      if (link.getAttribute('data-filter') === activeCategoryFilter) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
       }
     });
 
+    // 4. Slide up or down gender filter row dynamically
+    const genderFilterRow = document.getElementById('genderFilterRow');
+    if (genderFilterRow) {
+      if (activeCategoryFilter === 'all') {
+        genderFilterRow.classList.add('collapsed');
+      } else {
+        genderFilterRow.classList.remove('collapsed');
+      }
+    }
+
+    // 5. Render products
     renderProducts();
   }
 
-  filterTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      updateActiveFilter(tab.getAttribute('data-filter'));
+  // Bind category button clicks
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCategoryFilter = btn.getAttribute('data-category');
+      activeGenderFilter = 'all'; // Default to all when category changes
+      updateFilterUI();
     });
   });
 
+  // Bind gender button clicks
+  document.querySelectorAll('.gender-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeGenderFilter = btn.getAttribute('data-gender');
+      updateFilterUI();
+    });
+  });
+
+  // Bind parent navbar category links
   navFilterLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      updateActiveFilter(link.getAttribute('data-filter'));
-      // Scroll to collection section smoothly
+      const filter = link.getAttribute('data-filter');
+      activeCategoryFilter = filter;
+      activeGenderFilter = 'all';
+      updateFilterUI();
       document.getElementById('collection').scrollIntoView({ behavior: 'smooth' });
     });
   });
 
+  // Bind dropdown menu item links
+  document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const filter = item.getAttribute('data-filter');
+      const gender = item.getAttribute('data-gender');
+      activeCategoryFilter = filter;
+      activeGenderFilter = gender;
+      updateFilterUI();
+      document.getElementById('collection').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Bind footer category links
   footerFilterLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      updateActiveFilter(link.getAttribute('data-filter'));
+      const filter = link.getAttribute('data-filter');
+      activeCategoryFilter = filter;
+      activeGenderFilter = 'all';
+      updateFilterUI();
       document.getElementById('collection').scrollIntoView({ behavior: 'smooth' });
     });
   });
