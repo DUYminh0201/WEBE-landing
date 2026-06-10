@@ -1151,6 +1151,32 @@ document.addEventListener('DOMContentLoaded', () => {
     return total;
   }
 
+  /**
+   * Calculate shipping fee based on subtotal.
+   * Each product can have its own freeShipThreshold.
+   * The effective threshold = lowest per-product threshold found in cart
+   * (so the most generous threshold wins). Falls back to $40 default.
+   */
+  function calculateShippingFee(subtotal) {
+    const DEFAULT_FREE_SHIP = 40;
+    let effectiveThreshold = DEFAULT_FREE_SHIP;
+
+    const seenProducts = new Set();
+    cart.forEach(item => {
+      if (seenProducts.has(item.productId)) return;
+      seenProducts.add(item.productId);
+      const dbProduct = window.db.getProductById(item.productId);
+      if (dbProduct && dbProduct.freeShipThreshold !== null && dbProduct.freeShipThreshold !== undefined) {
+        const t = parseFloat(dbProduct.freeShipThreshold);
+        if (!isNaN(t) && t < effectiveThreshold) {
+          effectiveThreshold = t;
+        }
+      }
+    });
+
+    return subtotal < effectiveThreshold ? 2 : 0;
+  }
+
   function renderCart() {
     cartItemsContainer.innerHTML = '';
     
@@ -1243,7 +1269,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const subtotal = calculateCartTotal();
-    const shippingFee = subtotal < 40 ? 2 : 0;
+    const shippingFee = calculateShippingFee(subtotal);
     const finalTotal = subtotal + shippingFee;
 
     cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
@@ -1311,7 +1337,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cart.length === 0) return;
 
     const subtotal = calculateCartTotal();
-    const shippingFee = subtotal < 40 ? 2 : 0;
+    const shippingFee = calculateShippingFee(subtotal);
     const finalTotal = subtotal + shippingFee;
 
     if (checkoutSubtotal) checkoutSubtotal.textContent = `$${subtotal.toFixed(2)}`;
@@ -1354,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const subtotal = calculateCartTotal();
-    const shippingFee = subtotal < 40 ? 2 : 0;
+    const shippingFee = calculateShippingFee(subtotal);
     const finalTotal = subtotal + shippingFee;
 
     // Calculate total quantity per productId in cart to determine combo price status

@@ -351,13 +351,14 @@
       <div class="modal-body">
         <input type="hidden" id="editProductId">
         
-        <div class="form-group">
-          <label for="prodName">Tên sản phẩm *</label>
-          <input type="text" id="prodName" class="form-control" placeholder="Ví dụ: Jacket Da Lộn Cổ Bẻ" required>
-        </div>
-        <div class="form-row" style="grid-template-columns: 2.4fr 1.2fr 1.2fr;">
+        <!-- Row 1: Product Name + Category -->
+        <div class="form-row" style="grid-template-columns: 2fr 1.4fr; margin-bottom: 0;">
           <div class="form-group">
-            <label for="prodSmartCategory">Phân loại & Giới tính *</label>
+            <label for="prodName">Tên sản phẩm *</label>
+            <input type="text" id="prodName" class="form-control" placeholder="Ví dụ: Jacket Da Lộn Cổ Bẻ" required>
+          </div>
+          <div class="form-group">
+            <label for="prodSmartCategory">Phân loại &amp; Giới tính *</label>
             <select id="prodSmartCategory" class="form-control" required style="background: var(--bg-tertiary);">
               <optgroup label="Áo">
                 <option value="Outerwear_Unisex">Áo (Unisex)</option>
@@ -383,10 +384,18 @@
             <input type="hidden" id="prodCategory" value="Outerwear">
             <input type="hidden" id="prodGender" value="Unisex">
           </div>
-          
+        </div>
+
+        <!-- Row 2: Price / Free Ship / Stock -->
+        <div class="form-row" style="grid-template-columns: 1fr 1.4fr 1.2fr;">
           <div class="form-group">
             <label for="prodPrice">Giá bán lẻ ($) *</label>
             <input type="number" step="0.01" id="prodPrice" class="form-control" placeholder="Ví dụ: 129.99" required min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="prodFreeShipThreshold">Free Ship từ ($) <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;">(để trống = mặc định $40)</span></label>
+            <input type="number" step="0.01" id="prodFreeShipThreshold" class="form-control" placeholder="Mặc định: 40" min="0">
           </div>
 
           <div class="form-group">

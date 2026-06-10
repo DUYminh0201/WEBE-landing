@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const prodComboPriceInput = document.getElementById('prodComboPrice');
   const prodComboMinQtyInput = document.getElementById('prodComboMinQty');
   const prodStockInput = document.getElementById('prodStock');
+  const prodFreeShipThresholdInput = document.getElementById('prodFreeShipThreshold');
   const prodDescInput = document.getElementById('prodDesc');
   const prodColorInput = document.getElementById('prodColorInput');
   const btnAddColor = document.getElementById('btnAddColor');
@@ -668,6 +669,9 @@ document.addEventListener('DOMContentLoaded', () => {
       prodComboMinQtyInput.value = product.comboMinQty || 2;
     }
     prodStockInput.value = product.stock;
+    if (prodFreeShipThresholdInput) {
+      prodFreeShipThresholdInput.value = product.freeShipThreshold !== undefined && product.freeShipThreshold !== null ? product.freeShipThreshold : '';
+    }
     prodDescInput.value = product.description || '';
     
     // Combos
@@ -776,6 +780,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Assemble product object
+    const freeShipRaw = prodFreeShipThresholdInput ? prodFreeShipThresholdInput.value.trim() : '';
+    const freeShipThreshold = freeShipRaw !== '' ? parseFloat(freeShipRaw) : null;
+
     const productData = {
       name,
       category,
@@ -784,6 +791,7 @@ document.addEventListener('DOMContentLoaded', () => {
       comboPrice: selectedCombos[0] ? selectedCombos[0].price : 0,
       comboMinQty: selectedCombos[0] ? selectedCombos[0].minQty : 2,
       combos: selectedCombos,
+      freeShipThreshold,
       stock: totalStock,
       sizeStocks,
       description,
