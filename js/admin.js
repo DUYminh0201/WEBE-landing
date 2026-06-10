@@ -130,6 +130,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
+  /**
+   * Custom confirm dialog — works reliably on file:// and http:// (unlike native confirm()).
+   * @param {string} title
+   * @param {string} message
+   * @param {Function} onConfirm  — called when user clicks "Xóa"
+   */
+  function showConfirmDialog(title, message, onConfirm) {
+    // Remove any existing confirm dialog
+    const existing = document.getElementById('_adminConfirmDialog');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = '_adminConfirmDialog';
+    overlay.style.cssText = `
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+    `;
+
+    overlay.innerHTML = `
+      <div style="
+        background: var(--bg-secondary, #1e1e2e);
+        border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+        border-radius: 16px; padding: 28px 32px; max-width: 380px; width: 90%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        animation: fadeInScale 0.18s ease;
+      ">
+        <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary, #fff);">
+          ${title}
+        </div>
+        <div style="font-size: 0.9rem; color: var(--text-secondary, #aaa); margin-bottom: 24px;">
+          ${message}
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button id="_confirmCancelBtn" style="
+            padding: 9px 20px; border-radius: 8px; border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+            background: transparent; color: var(--text-primary, #fff); cursor: pointer; font-size: 0.9rem;
+          ">Hủy</button>
+          <button id="_confirmOkBtn" style="
+            padding: 9px 20px; border-radius: 8px; border: none;
+            background: #ef4444; color: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 600;
+          ">Xóa</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    overlay.querySelector('#_confirmOkBtn').addEventListener('click', () => {
+      overlay.remove();
+      onConfirm();
+    });
+    overlay.querySelector('#_confirmCancelBtn').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  }
+
   /* ==========================================
      AUTHENTICATION & SIDEBAR NAVIGATION
      ========================================== */
@@ -896,6 +952,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     
+    const rows = [];
     sortedOrders.forEach(order => {
       // Customer details column
       const customerInfo = `
@@ -940,11 +997,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"></path></svg>
            </button>`;
 
-      const deleteBtn = `<button class="btn-table-action btn-delete-order" data-id="${order.id}" title="Xóa đơn hàng">
+      const deleteBtn = `<button class="btn-table-action btn-delete-order" data-id="${order.id}" title="Xóa đơn hàng" style="color: var(--danger, #ef4444);">
           <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
          </button>`;
 
-      allOrdersTable.innerHTML += `
+      rows.push(`
         <tr class="order-row ${order.synced ? 'synced' : 'unsynced'}">
           <td><input type="checkbox" class="order-checkbox" data-id="${order.id}"></td>
           <td><strong>#${order.id.replace('ORD_', '')}</strong></td>
@@ -960,8 +1017,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </td>
         </tr>
-      `;
+      `);
     });
+
+    // Set innerHTML once — avoids the innerHTML+= loop that destroys event listeners
+    allOrdersTable.innerHTML = rows.join('');
     
     // Bind checkbox listeners to update state if they click select-all or single select
     document.querySelectorAll('.order-checkbox').forEach(cb => {
@@ -983,17 +1043,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bind delete order listeners
     document.querySelectorAll('.btn-delete-order').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const id = btn.getAttribute('data-id');
-        if (confirm(`Bạn có chắc chắn muốn xóa đơn hàng "${id}" không? Thao tác này không thể hoàn tác.`)) {
-          if (window.db.deleteOrder(id)) {
-            showToast('Đã xóa đơn hàng thành công!', 'success');
-          } else {
-            showToast('Có lỗi xảy ra khi xóa đơn hàng!', 'error');
+        const shortId = id.replace('ORD_', '');
+        showConfirmDialog(
+          `Xóa đơn hàng #${shortId}?`,
+          'Thao tác này không thể hoàn tác.',
+          () => {
+            if (window.db.deleteOrder(id)) {
+              showToast('Đã xóa đơn hàng thành công!', 'success');
+            } else {
+              showToast('Có lỗi xảy ra khi xóa đơn hàng!', 'error');
+            }
+            renderMetrics();
+            renderOrdersTable();
           }
-          renderMetrics();
-          renderOrdersTable();
-        }
+        );
       });
     });
 
