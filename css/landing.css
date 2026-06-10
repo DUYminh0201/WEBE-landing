@@ -40,9 +40,7 @@
   font-weight: 800;
   letter-spacing: 0.15em;
   display: inline-block;
-  background: linear-gradient(135deg, var(--accent-light), var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accent);
 }
 
 .nav-links {
