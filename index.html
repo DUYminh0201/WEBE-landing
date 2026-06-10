@@ -443,6 +443,14 @@
     </div>
   </div>
 
+  <!-- IMAGE LIGHTBOX MODAL -->
+  <div class="modal-overlay" id="imageLightbox" style="background-color: rgba(0, 0, 0, 0.95); z-index: 5000;">
+    <span class="modal-close" id="btnCloseLightbox" style="position: absolute; top: 24px; right: 24px; color: white; font-size: 3rem; cursor: pointer; z-index: 5100; user-select: none;">&times;</span>
+    <div style="max-width: 95vw; max-height: 95vh; display: flex; align-items: center; justify-content: center; position: relative;">
+      <img id="lightboxImage" src="" style="max-width: 100%; max-height: 95vh; object-fit: contain; border-radius: var(--radius-sm); box-shadow: 0 24px 50px rgba(0,0,0,0.5);">
+    </div>
+  </div>
+
   <!-- Toast Notification System -->
   <div class="toast-container" id="toastContainer"></div>
 

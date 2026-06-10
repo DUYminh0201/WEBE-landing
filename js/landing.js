@@ -1397,4 +1397,32 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('db-error', (e) => {
     showToast(e.detail.message, 'error');
   });
+
+  // Image Lightbox logic
+  const imageLightbox = document.getElementById('imageLightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  const btnCloseLightbox = document.getElementById('btnCloseLightbox');
+
+  if (qvMainImage && imageLightbox && lightboxImage) {
+    qvMainImage.addEventListener('click', () => {
+      if (qvMainImage.src) {
+        lightboxImage.src = qvMainImage.src;
+        imageLightbox.classList.add('active');
+      }
+    });
+  }
+
+  if (btnCloseLightbox && imageLightbox) {
+    btnCloseLightbox.addEventListener('click', () => {
+      imageLightbox.classList.remove('active');
+    });
+  }
+
+  if (imageLightbox) {
+    imageLightbox.addEventListener('click', (e) => {
+      if (e.target === imageLightbox) {
+        imageLightbox.classList.remove('active');
+      }
+    });
+  }
 });
