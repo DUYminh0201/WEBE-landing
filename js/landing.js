@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Storefront Landing Page Interactivity, Cart Drawer & Quick View Modals
  */
 
@@ -941,7 +941,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.overflowY = '';
-      window.scrollTo(0, _savedScrollY);
+      // Use 'instant' to prevent the smooth scroll animation (from html { scroll-behavior: smooth })
+      // which makes it look like the page is scrolling when closing a modal
+      window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
       // Restore navbar state based on actual scroll position
       if (navbar) {
         if (_savedScrollY > 50) {
