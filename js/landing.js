@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lang = localStorage.getItem('fashion_store_lang') || 'vi';
     let text = TRANSLATIONS[lang]?.[key] || key;
     for (let placeholder in replacements) {
-      text = text.replace(`{${placeholder}}`, replacements[placeholder]);
+      text = text.replaceAll(`{${placeholder}}`, replacements[placeholder]);
     }
     return text;
   }
