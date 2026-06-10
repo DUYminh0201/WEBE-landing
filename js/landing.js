@@ -1300,8 +1300,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (success) {
       showToast(getTranslationText('toast_added'), 'success');
       flyToCart(btnQVAddToCart); // Animate dot flying to cart icon
-      closeQVModal();
-      // Cart drawer only opens when user clicks the cart icon
+      // Stay in Quick View so user can keep browsing; cart only opens when user clicks the cart icon
     }
   });
 
