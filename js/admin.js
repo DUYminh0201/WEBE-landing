@@ -296,6 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (recent.length === 0) {
       recentProductsTable.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">Chưa có sản phẩm nào.</td></tr>`;
     } else {
+    const recentRows = [];
       recent.forEach(p => {
         const thumb = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150';
         const priceLabel = getPriceDisplayHTML(p);
@@ -307,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '</span>';
         }
         
-        recentProductsTable.innerHTML += `
+        recentRows.push(`
           <tr>
             <td>
               <div class="table-product-info">
@@ -319,8 +320,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <td><strong>${priceLabel}</strong></td>
             <td>${p.stock > 10 ? p.stock : `<span style="color: var(--danger); font-weight: 600;">${p.stock} (Ít hàng)</span>`}${stockBreakdown}</td>
           </tr>
-        `;
+        `);
       });
+      recentProductsTable.innerHTML = recentRows.join('');
     }
 
     // Render All Products (Products Section)
@@ -328,6 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sortedProducts.length === 0) {
       allProductsTable.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Chưa có sản phẩm nào.</td></tr>`;
     } else {
+      const allRows = [];
       sortedProducts.forEach(p => {
         const thumb = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150';
         
@@ -381,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const priceLabel = getPriceDisplayHTML(p);
 
-        allProductsTable.innerHTML += `
+        allRows.push(`
           <tr>
             <td>
               <div class="table-product-info">
@@ -401,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                   </svg>
                 </button>
-                <button class="btn-table-action btn-delete" data-id="${p.id}" data-name="${p.name}" title="Xóa">
+                <button class="btn-table-action btn-delete" data-id="${p.id}" data-name="${p.name}" title="Xóa" style="color: var(--danger, #ef4444);">
                   <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                   </svg>
@@ -409,8 +412,11 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </td>
           </tr>
-        `;
+        `);
       });
+
+      // Set innerHTML once — avoids innerHTML+= destroying event listeners on each iteration
+      allProductsTable.innerHTML = allRows.join('');
 
       // Bind action buttons listener
       document.querySelectorAll('.btn-edit').forEach(btn => {

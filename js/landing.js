@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Storefront Landing Page Interactivity, Cart Drawer & Quick View Modals
  */
 
