@@ -543,6 +543,10 @@ h1, h2, h3, h4, h5, h6 {
     padding: 12px 16px;
     font-size: 0.9rem;
   }
+
+  /* Quick View: full-screen on mobile, aligned to top */
+  #quickViewModal {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
 }
-
-
