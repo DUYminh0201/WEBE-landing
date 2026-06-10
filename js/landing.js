@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Get dynamic translated text helper
   function getTranslationText(key, replacements = {}) {
-    const lang = localStorage.getItem('fashion_store_lang') || 'vi';
+    const lang = localStorage.getItem('fashion_store_lang') || 'km';
     let text = TRANSLATIONS[lang]?.[key] || key;
     for (let placeholder in replacements) {
       text = text.replaceAll(`{${placeholder}}`, replacements[placeholder]);
@@ -730,7 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function translateCategory(cat) {
-    const lang = localStorage.getItem('fashion_store_lang') || 'vi';
+    const lang = localStorage.getItem('fashion_store_lang') || 'km';
     const key = 'cat_' + cat.toLowerCase();
     return TRANSLATIONS[lang]?.[key] || cat;
   }
@@ -1519,10 +1519,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize language selection
   const savedLang = localStorage.getItem('fashion_store_lang');
   if (!savedLang) {
-    if (langWelcomeModal) {
-      langWelcomeModal.classList.add('active');
-    }
-    applyTranslations('vi');
+    // No saved preference: default to Khmer, skip welcome modal
+    applyTranslations('km');
+    localStorage.setItem('fashion_store_lang', 'km');
   } else {
     applyTranslations(savedLang);
   }
