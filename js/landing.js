@@ -1024,25 +1024,42 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCart();
   }
 
-  // Smart Helper to get unit price based on quantity and configured combo tiers
-  function getProductUnitPrice(dbProduct, totalQty) {
+  // Optimal Dynamic Programming Helper to calculate minimum cost for a quantity of products
+  function getProductMinCost(dbProduct, totalQty) {
     if (!dbProduct) return 0;
-    if (dbProduct.combos && dbProduct.combos.length > 0) {
-      const sortedCombos = [...dbProduct.combos].sort((a, b) => b.minQty - a.minQty);
-      const activeCombo = sortedCombos.find(c => totalQty >= c.minQty);
-      if (activeCombo) {
-        return parseFloat(activeCombo.price);
-      }
-    } else if (dbProduct.comboPrice) {
-      const minQty = dbProduct.comboMinQty || 2;
-      if (totalQty >= minQty) {
-        const bundles = Math.floor(totalQty / minQty);
-        const single = totalQty % minQty;
-        const totalProductPrice = (bundles * parseFloat(dbProduct.comboPrice)) + (single * parseFloat(dbProduct.price));
-        return totalProductPrice / totalQty;
-      }
+    const retailPrice = parseFloat(dbProduct.price);
+    if (totalQty <= 0) return 0;
+    
+    const dp = new Array(totalQty + 1).fill(0);
+    dp[0] = 0;
+    
+    const combos = dbProduct.combos || [];
+    const activeTiers = [...combos];
+    if (activeTiers.length === 0 && dbProduct.comboPrice) {
+      activeTiers.push({ minQty: dbProduct.comboMinQty || 2, price: parseFloat(dbProduct.comboPrice) });
     }
-    return parseFloat(dbProduct.price);
+    
+    for (let i = 1; i <= totalQty; i++) {
+      let minCost = dp[i - 1] + retailPrice;
+      activeTiers.forEach(c => {
+        const minQty = parseInt(c.minQty);
+        const comboPrice = parseFloat(c.price);
+        if (i >= minQty) {
+          const cost = dp[i - minQty] + comboPrice;
+          if (cost < minCost) {
+            minCost = cost;
+          }
+        }
+      });
+      dp[i] = minCost;
+    }
+    return dp[totalQty];
+  }
+
+  // Get average unit price across the optimal combination
+  function getProductAverageUnitPrice(dbProduct, totalQty) {
+    if (totalQty <= 0) return 0;
+    return getProductMinCost(dbProduct, totalQty) / totalQty;
   }
 
   function calculateCartTotal() {
@@ -1060,8 +1077,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const dbProduct = window.db.getProductById(item.productId);
       const qty = prodQtyMap[item.productId];
       
-      const unitPrice = getProductUnitPrice(dbProduct, qty);
-      total += unitPrice * qty;
+      total += getProductMinCost(dbProduct, qty);
     });
     return total;
   }
@@ -1106,12 +1122,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      const actualUnitPrice = getProductUnitPrice(dbProduct, totalProductQty);
-      const isComboApplied = actualUnitPrice < parseFloat(item.price);
+      const avgUnitPrice = getProductAverageUnitPrice(dbProduct, totalProductQty);
+      const isComboApplied = avgUnitPrice < parseFloat(item.price);
       
       let priceDisplay = '';
       if (isComboApplied) {
-        const lineTotal = actualUnitPrice * item.qty;
+        const lineTotal = avgUnitPrice * item.qty;
         const lineRetailTotal = parseFloat(item.price) * item.qty;
 
         priceDisplay = `
@@ -1284,7 +1300,7 @@ document.addEventListener('DOMContentLoaded', () => {
       items: cart.map(item => {
         const dbProduct = window.db.getProductById(item.productId);
         const totalProductQty = prodQtyMap[item.productId];
-        const actualPrice = getProductUnitPrice(dbProduct, totalProductQty);
+        const actualPrice = getProductAverageUnitPrice(dbProduct, totalProductQty);
         
         return {
           ...item,
