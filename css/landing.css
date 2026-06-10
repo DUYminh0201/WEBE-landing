@@ -588,7 +588,7 @@
   height: calc(100% - var(--header-height));
   background-color: var(--bg-secondary);
   border-left: 1px solid var(--border-color);
-  z-index: 2000;
+  z-index: 3500;
   transform: translateX(100%);
   transition: var(--transition-normal);
   display: flex;
@@ -608,7 +608,7 @@
   height: calc(100% - var(--header-height));
   background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
-  z-index: 1999;
+  z-index: 3499;
   opacity: 0;
   pointer-events: none;
   transition: var(--transition-normal);
