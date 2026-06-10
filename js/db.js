@@ -15,6 +15,7 @@ const DEFAULT_PRODUCTS = [
     comboPrice: 159.00,
     comboMinQty: 2,
     category: 'Outerwear',
+    gender: 'Unisex',
     images: [
       'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800',
       'https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&q=80&w=800'
@@ -37,6 +38,7 @@ const DEFAULT_PRODUCTS = [
     comboPrice: 79.00,
     comboMinQty: 2,
     category: 'Trousers',
+    gender: 'Unisex',
     images: [
       'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800',
       'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&q=80&w=800'
@@ -58,7 +60,8 @@ const DEFAULT_PRODUCTS = [
     price: 125.00,
     comboPrice: 99.00,
     comboMinQty: 2,
-    category: 'Streetwear',
+    category: 'Outerwear',
+    gender: 'Unisex',
     images: [
       'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=800',
       'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&q=80&w=800'
@@ -81,6 +84,7 @@ const DEFAULT_PRODUCTS = [
     comboPrice: 210.00,
     comboMinQty: 2,
     category: 'Footwear',
+    gender: 'Unisex',
     images: [
       'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&q=80&w=800',
       'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&q=80&w=800'
@@ -117,6 +121,14 @@ function initDB() {
         }
         if (p.comboPrice && !p.comboMinQty) {
           p.comboMinQty = 2;
+          migrated = true;
+        }
+        if (!p.gender) {
+          p.gender = 'Unisex';
+          migrated = true;
+        }
+        if (p.category === 'Streetwear') {
+          p.category = 'Outerwear';
           migrated = true;
         }
         

@@ -4,7 +4,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // States
-  let activeFilter = 'all';
+  let activeGenderFilter = 'all';
+  let activeCategoryFilter = 'all';
   let activeQuickViewProduct = null;
   let qvSelectedColor = null;
   let qvSelectedSize = null;
@@ -66,13 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================
      TRANSLATION SYSTEM DICTIONARY (VI, EN, KM)
      ========================================== */
-  const TRANSLATIONS = {
+    const TRANSLATIONS = {
     vi: {
       nav_all: "Tất Cả",
-      nav_outerwear: "Áo Khoác",
+      nav_outerwear: "Áo",
       nav_trousers: "Quần",
-      nav_streetwear: "Streetwear",
-      nav_footwear: "Giày Dép",
+      nav_footwear: "Giày",
+      nav_accessories: "Phụ kiện",
       hero_badge_new: "WEBE",
       hero_badge_season: "BST THỜI TRANG ĐƯƠNG ĐẠI UNISEX 2026",
       hero_title: 'Định Hình<br><span class="text-gold">Phong Cách</span><br>Đương Đại',
@@ -87,10 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
       coll_title: "Sản Phẩm Nổi Bật",
       coll_desc: "Chọn lọc những thiết kế đặc sắc nhất cho cả nam và nữ, từ áo sơ mi, áo khoác cho tới giày da sang trọng.",
       coll_tab_all: "Tất cả",
-      coll_tab_outer: "Áo khoác",
+      coll_tab_outer: "Áo",
       coll_tab_trousers: "Quần",
-      coll_tab_street: "Streetwear",
-      coll_tab_footwear: "Giày dép",
+      coll_tab_footwear: "Giày",
       coll_tab_acc: "Phụ kiện",
       cart_title: "Giỏ Hàng Của Bạn",
       cart_empty: "Giỏ hàng của bạn đang trống",
@@ -120,10 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
       foot_about_title: "WEBE",
       foot_about_desc: "Nhà may đo và cung cấp các giải pháp thời trang đô thị tối giản hàng đầu. Định hình xu hướng thiết kế cao cấp và độc bản.",
       foot_coll_title: "Bộ Sưu Tập",
-      foot_links_outer: "Áo khoác nam nữ",
+      foot_links_outer: "Áo thời trang",
       foot_links_trousers: "Quần thiết kế",
-      foot_links_street: "Streetwear độc bản",
-      foot_links_footwear: "Giày da cao cấp",
+      foot_links_footwear: "Giày cao cấp",
+      foot_links_acc: "Phụ kiện thời thượng",
       foot_info_title: "Thông Tin",
       foot_links_brand: "Về thương hiệu",
       foot_links_ship: "Chính sách vận chuyển",
@@ -141,10 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
       toast_select_size: "Vui lòng chọn kích cỡ (size) sản phẩm!",
       toast_success_order: "Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.",
       toast_sub_success: "Đăng ký bản tin thành công! Cảm ơn bạn.",
-      cat_outerwear: "Áo khoác",
+      cat_outerwear: "Áo",
       cat_trousers: "Quần",
-      cat_streetwear: "Đồ dạo phố",
-      cat_footwear: "Giày dép",
+      cat_footwear: "Giày",
       cat_accessories: "Phụ kiện",
       badge_out: "Hết hàng",
       badge_low: "Sắp hết",
@@ -158,14 +157,23 @@ document.addEventListener('DOMContentLoaded', () => {
       toast_required_fields: "Vui lòng điền đầy đủ các thông tin bắt buộc!",
       qv_combo_price: "Combo (từ {qty} cái): {price}/ {qty} cái",
       card_combo_price: "Combo ({qty}+): {price}/ {qty} cái",
-      cart_default_color: "Mặc định"
+      cart_default_color: "Mặc định",
+      filter_target_label: "Dành cho:",
+      filter_target_all: "Tất cả",
+      filter_target_men: "Nam",
+      filter_target_women: "Nữ",
+      filter_target_unisex: "Unisex",
+      filter_category_label: "Danh mục:",
+      gender_men: "Nam",
+      gender_women: "Nữ",
+      gender_unisex: "Unisex"
     },
     en: {
       nav_all: "All",
-      nav_outerwear: "Outerwear",
+      nav_outerwear: "Tops",
       nav_trousers: "Trousers",
-      nav_streetwear: "Streetwear",
       nav_footwear: "Footwear",
+      nav_accessories: "Accessories",
       hero_badge_new: "WEBE",
       hero_badge_season: "UNISEX CONTEMPORARY COLLECTION 2026",
       hero_title: 'Define<br><span class="text-gold">Contemporary</span><br>Style',
@@ -180,9 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
       coll_title: "Featured Products",
       coll_desc: "Curated selections of premium apparel for both men and women, from shirts and outerwear to sleek leather shoes.",
       coll_tab_all: "All",
-      coll_tab_outer: "Outerwear",
+      coll_tab_outer: "Tops",
       coll_tab_trousers: "Trousers",
-      coll_tab_street: "Streetwear",
       coll_tab_footwear: "Footwear",
       coll_tab_acc: "Accessories",
       cart_title: "Your Shopping Cart",
@@ -213,10 +220,10 @@ document.addEventListener('DOMContentLoaded', () => {
       foot_about_title: "WEBE",
       foot_about_desc: "Premium contemporary fashion tailor. Defining unique and limited design trends.",
       foot_coll_title: "Collections",
-      foot_links_outer: "Outerwear Collection",
+      foot_links_outer: "Tops Collection",
       foot_links_trousers: "Tailored Trousers",
-      foot_links_street: "Limited Streetwear",
       foot_links_footwear: "Premium Footwear",
+      foot_links_acc: "Accessories",
       foot_info_title: "Information",
       foot_links_brand: "Our Story",
       foot_links_ship: "Shipping Policy",
@@ -234,9 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
       toast_select_size: "Please select a product size!",
       toast_success_order: "Order placed successfully! Your order is being processed.",
       toast_sub_success: "Newsletter subscription successful! Thank you.",
-      cat_outerwear: "Outerwear",
+      cat_outerwear: "Tops",
       cat_trousers: "Trousers",
-      cat_streetwear: "Streetwear",
       cat_footwear: "Footwear",
       cat_accessories: "Accessories",
       badge_out: "Out of stock",
@@ -251,31 +257,39 @@ document.addEventListener('DOMContentLoaded', () => {
       toast_required_fields: "Please fill in all required fields!",
       qv_combo_price: "Combo (from {qty} pcs): {price}/ {qty} pcs",
       card_combo_price: "Combo ({qty}+): {price}/ {qty} pcs",
-      cart_default_color: "Default"
+      cart_default_color: "Default",
+      filter_target_label: "For:",
+      filter_target_all: "All",
+      filter_target_men: "Men",
+      filter_target_women: "Women",
+      filter_target_unisex: "Unisex",
+      filter_category_label: "Category:",
+      gender_men: "Men",
+      gender_women: "Women",
+      gender_unisex: "Unisex"
     },
     km: {
       nav_all: "ទាំងអស់",
-      nav_outerwear: "អាវធំ",
+      nav_outerwear: "អាវ",
       nav_trousers: "ខោវែង",
-      nav_streetwear: "យុវវ័យ",
       nav_footwear: "ស្បែកជើង",
+      nav_accessories: "គ្រឿងបន្លាស់",
       hero_badge_new: "WEBE",
       hero_badge_season: "បណ្តុំសម្លៀកបំពាក់យូនីសេក ២០២៦",
       hero_title: 'កំណត់<br><span class="text-gold">ស្ទីលបច្ចុប្បន្ន</span><br>ភាពទាន់សម័យ',
-      hero_desc: "រចនាបថប្រណិត ភាពសាមញ្ញបំផុត។ ទទួលបានបទពិសោធន៍សម្លៀកបំពាក់គុណភាពខ្ពស់ពី WEBE។",
+      hero_desc: "រចនាបថប្រណិត ភាពសាមញ្ញបំផុត。 ទទួលបានបទពិសោធន៍សម្លៀកបំពាក់គុណភាពខ្ពស់ពី WEBE។",
       hero_buy_now: "ទិញឥឡូវនេះ",
       feat1_title: "ដឹកជញ្ជូនរហ័ស",
       feat1_desc: "ដឹកជញ្ជូនឥតគិតថ្លៃទូទាំងប្រទេសសម្រាប់ការបញ្ជាទិញចាប់ពី $40 ឡើងទៅ។ ខ្ចប់ក្នុងប្រអប់កាដូដ៏ប្រណិត។",
       feat2_title: "វត្ថុធាតុដើមប្រណិត",
-      feat2_desc: "ប្តេជ្ញาប្រើប្រាស់វត្ថុធាតុដើមប្រកបដោយនិរន្តរភាពដូចជា Organic Cotton, រោមចៀមធម្មជាតិ និងសូត្រលំដាប់ខ្ពស់។",
+      feat2_desc: "ប្តេជ្ញាប្រើប្រាស់វត្ថុធាតុដើមប្រកបដោយនិរន្តរភាពដូចជា Organic Cotton, រោមចៀមធម្មជាតិ និងសូត្រលំដាប់ខ្ពស់។",
       feat3_title: "រចនាផ្តាច់មុខ",
       feat3_desc: "រាល់ការរចនាទាំងអស់ត្រូវបានគូរ និងកែច្នៃមានកំណត់ ធានាបាននូវរូបរាងស្អាតសាកសមនឹងរាងកាយ។",
       coll_title: "ផលិតផលលេចធ្លោ",
       coll_desc: "ការជ្រើសរើសសំលៀកបំពាក់លំដាប់ខ្ពស់សម្រាប់បុរសនិងនារី ពីអាវសណ្តែក អាវធំ រហូតដល់ស្បែកជើងស្បែកដ៏ប្រណិត។",
       coll_tab_all: "ទាំងអស់",
-      coll_tab_outer: "អាវធំ",
+      coll_tab_outer: "អាវ",
       coll_tab_trousers: "ខោវែង",
-      coll_tab_street: "យុវវ័យ",
       coll_tab_footwear: "ស្បែកជើង",
       coll_tab_acc: "គ្រឿងបន្លាស់",
       cart_title: "កន្ត្រកទិញទំនិញរបស់អ្នក",
@@ -306,10 +320,10 @@ document.addEventListener('DOMContentLoaded', () => {
       foot_about_title: "WEBE",
       foot_about_desc: "ហាងកាត់ដេរ និងផ្តល់ជូននូវម៉ូដសម្លៀកបំពាក់ទាន់សម័យដ៏លេចធ្លោ។ កំណត់និន្នាការរចនាប្លែកៗ。",
       foot_coll_title: "បណ្តុំម៉ូដសម្លៀកបំពាក់",
-      foot_links_outer: "អាវធំបុរសនារី",
+      foot_links_outer: "បណ្តុំអាវ",
       foot_links_trousers: "ខោរចនាពិសេស",
-      foot_links_street: "សម្លៀកបំពាក់យុវវ័យប្លែកៗ",
-      foot_links_footwear: "ស្បែកជើងស្បែកប្រណិត",
+      foot_links_footwear: "ស្បែកជើងប្រណិត",
+      foot_links_acc: "គ្រឿងបន្លាស់",
       foot_info_title: "ព័ត៌មាន",
       foot_links_brand: "អំពីយីហោ",
       foot_links_ship: "គោលការណ៍ដឹកជញ្ជូន",
@@ -322,14 +336,13 @@ document.addEventListener('DOMContentLoaded', () => {
       foot_credit: "រចនាដោយ ក្រុមវិស្វករច្នៃប្រឌិតរបស់ Google DeepMind។",
       toast_added: "បានបន្ថែមផលិតផលទៅកន្ត្រកហើយ!",
       toast_limit: "មិនអាចបន្ថែមបានទេ! ដែនកំណត់ស្តុកនៅសល់ត្រឹមតែ {stock} គ្រឿងប៉ុណ្ហោះ។",
-      toast_limit_short: "មិនអាចបន្ថែមបានទេ! នៅសល់តែ {stock} គ្រឿងប៉ុណ្ហោះ។",
+      toast_limit_short: "មិនអាចបន្ថែមបានទេ! នៅសល់តែ {stock} គ្រឿងប៉ុណ្ហោះ。 (Khmer translation text truncated)",
       toast_select_color: "សូមជ្រើសរើសពណ៌ផលិតផល!",
       toast_select_size: "សូមជ្រើសរើសទំហំផលិតផល!",
       toast_success_order: "ការបញ្ជាទិញបានជោគជ័យ! ការបញ្ជាទិញរបស់អ្នកកំពុងដំណើរការ។",
       toast_sub_success: "បានចុះឈ្មោះទទួលព្រឹត្តិបត្រជោគជ័យ! សូមអរគុណ។",
-      cat_outerwear: "អាវធំ",
+      cat_outerwear: "អាវ",
       cat_trousers: "ខោវែង",
-      cat_streetwear: "យុវវ័យ",
       cat_footwear: "ស្បែកជើង",
       cat_accessories: "គ្រឿងបន្លាស់",
       badge_out: "អស់ស្តុក",
@@ -344,7 +357,16 @@ document.addEventListener('DOMContentLoaded', () => {
       toast_required_fields: "សូមបំពេញព័ត៌មានដែលត្រូវការទាំងអស់!",
       qv_combo_price: "Combo (ចាប់ពី {qty} គ្រឿង): {price}/ {qty} គ្រឿង",
       card_combo_price: "Combo ({qty}+): {price}/ {qty} គ្រឿង",
-      cart_default_color: "លំនាំដើម"
+      cart_default_color: "លំនាំដើម",
+      filter_target_label: "សម្រាប់:",
+      filter_target_all: "ទាំងអស់",
+      filter_target_men: "បុរស",
+      filter_target_women: "នារី",
+      filter_target_unisex: "យូនីសេក",
+      filter_category_label: "ប្រភេទ:",
+      gender_men: "បុរស",
+      gender_women: "នារី",
+      gender_unisex: "យូនីសេក"
     }
   };
 
@@ -527,7 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
         <div class="product-card-info">
-          <span class="product-card-category">${translateCategory(p.category)}</span>
+          <span class="product-card-category">${translateCategory(p.category)} ${p.gender && p.gender !== 'Unisex' ? `| ${getTranslationText('gender_' + p.gender.toLowerCase())}` : ''}</span>
           <h3 class="product-card-title">${p.name}</h3>
           <div class="product-card-price-variants">
             <div style="display: flex; flex-direction: column; gap: 2px;">
@@ -692,7 +714,8 @@ document.addEventListener('DOMContentLoaded', () => {
     qvSelectedSize = null;
 
     // Set Text Parameters
-    qvCategory.textContent = translateCategory(product.category);
+    const genderLabel = product.gender ? ` | ${getTranslationText('gender_' + product.gender.toLowerCase())}` : '';
+    qvCategory.textContent = `${translateCategory(product.category)}${genderLabel}`;
     qvTitle.textContent = product.name;
     if (product.comboPrice) {
       const retailPriceFormatted = `$${parseFloat(product.price).toFixed(2)}`;

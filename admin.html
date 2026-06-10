@@ -356,15 +356,23 @@
           <input type="text" id="prodName" class="form-control" placeholder="Ví dụ: Jacket Da Lộn Cổ Bẻ" required>
         </div>
 
-        <div class="form-row" style="grid-template-columns: 1.5fr 1fr 1fr 1fr;">
+        <div class="form-row" style="grid-template-columns: 1.2fr 1.2fr 1fr 1fr 1fr;">
           <div class="form-group">
             <label for="prodCategory">Phân loại *</label>
             <select id="prodCategory" class="form-control" required style="background: var(--bg-tertiary);">
-              <option value="Outerwear">Áo khoác (Outerwear)</option>
-              <option value="Trousers">Quần (Trousers)</option>
-              <option value="Streetwear">Thời trang dạo phố (Streetwear)</option>
-              <option value="Footwear">Giày dép (Footwear)</option>
-              <option value="Accessories">Phụ kiện (Accessories)</option>
+              <option value="Outerwear">Áo</option>
+              <option value="Trousers">Quần</option>
+              <option value="Footwear">Giày</option>
+              <option value="Accessories">Phụ kiện</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="prodGender">Dành cho *</label>
+            <select id="prodGender" class="form-control" required style="background: var(--bg-tertiary);">
+              <option value="Unisex">Unisex</option>
+              <option value="Men">Nam</option>
+              <option value="Women">Nữ</option>
             </select>
           </div>
           

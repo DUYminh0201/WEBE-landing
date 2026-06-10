@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const editProductIdInput = document.getElementById('editProductId');
   const prodNameInput = document.getElementById('prodName');
   const prodCategoryInput = document.getElementById('prodCategory');
+  const prodGenderInput = document.getElementById('prodGender');
   const prodPriceInput = document.getElementById('prodPrice');
   const prodComboPriceInput = document.getElementById('prodComboPrice');
   const prodComboMinQtyInput = document.getElementById('prodComboMinQty');
@@ -240,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="table-product-name">${p.name}</span>
               </div>
             </td>
-            <td><span class="badge badge-primary">${translateCategory(p.category)}</span></td>
+            <td><span class="badge badge-primary">${translateCategory(p.category)}${p.gender ? ` (${translateGender(p.gender)})` : ''}</span></td>
             <td><strong>${priceLabel}</strong></td>
             <td>${p.stock > 10 ? p.stock : `<span style="color: var(--danger); font-weight: 600;">${p.stock} (Ít hàng)</span>`}${stockBreakdown}</td>
           </tr>
@@ -316,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="table-product-name">${p.name}</span>
               </div>
             </td>
-            <td><span class="badge badge-primary">${translateCategory(p.category)}</span></td>
+            <td><span class="badge badge-primary">${translateCategory(p.category)}${p.gender ? ` (${translateGender(p.gender)})` : ''}</span></td>
             <td><strong>${priceLabel}</strong></td>
             <td>${colorsHtml}</td>
             <td>${sizesHtml}</td>
@@ -353,13 +354,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Category translation helper
   function translateCategory(cat) {
     const mapping = {
-      'Outerwear': 'Áo khoác',
+      'Outerwear': 'Áo',
       'Trousers': 'Quần',
-      'Streetwear': 'Đồ dạo phố',
-      'Footwear': 'Giày dép',
+      'Footwear': 'Giày',
       'Accessories': 'Phụ kiện'
     };
     return mapping[cat] || cat;
+  }
+
+  // Gender translation helper
+  function translateGender(gender) {
+    const mapping = {
+      'Men': 'Nam',
+      'Women': 'Nữ',
+      'Unisex': 'Unisex'
+    };
+    return mapping[gender] || gender;
   }
 
   /* ==========================================
@@ -529,6 +539,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (prodComboMinQtyInput) {
       prodComboMinQtyInput.value = 2;
     }
+    if (prodGenderInput) {
+      prodGenderInput.value = 'Unisex';
+    }
     selectedColors = [];
     selectedImages = [];
     renderColorTags();
@@ -551,6 +564,9 @@ document.addEventListener('DOMContentLoaded', () => {
     editProductIdInput.value = product.id;
     prodNameInput.value = product.name;
     prodCategoryInput.value = product.category;
+    if (prodGenderInput) {
+      prodGenderInput.value = product.gender || 'Unisex';
+    }
     prodPriceInput.value = product.price;
     if (prodComboPriceInput) {
       prodComboPriceInput.value = product.comboPrice || '';
@@ -611,6 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const name = prodNameInput.value.trim();
     const category = prodCategoryInput.value;
+    const gender = prodGenderInput ? prodGenderInput.value : 'Unisex';
     const price = parseFloat(prodPriceInput.value);
     const comboPrice = prodComboPriceInput ? parseFloat(prodComboPriceInput.value) || 0 : 0;
     const comboMinQty = prodComboMinQtyInput ? parseInt(prodComboMinQtyInput.value) || 2 : 2;
@@ -662,6 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const productData = {
       name,
       category,
+      gender,
       price,
       comboPrice,
       comboMinQty,

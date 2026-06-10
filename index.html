@@ -25,10 +25,10 @@
 
       <ul class="nav-links">
         <li><a href="#" class="nav-link active" data-filter="all" data-i18n="nav_all">Tất Cả</a></li>
-        <li><a href="#" class="nav-link" data-filter="Outerwear" data-i18n="nav_outerwear">Áo Khoác</a></li>
+        <li><a href="#" class="nav-link" data-filter="Outerwear" data-i18n="nav_outerwear">Áo</a></li>
         <li><a href="#" class="nav-link" data-filter="Trousers" data-i18n="nav_trousers">Quần</a></li>
-        <li><a href="#" class="nav-link" data-filter="Streetwear" data-i18n="nav_streetwear">Streetwear</a></li>
-        <li><a href="#" class="nav-link" data-filter="Footwear" data-i18n="nav_footwear">Giày Dép</a></li>
+        <li><a href="#" class="nav-link" data-filter="Footwear" data-i18n="nav_footwear">Giày</a></li>
+        <li><a href="#" class="nav-link" data-filter="Accessories" data-i18n="nav_accessories">Phụ kiện</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -97,14 +97,29 @@
           giày da sang trọng.
         </p>
 
-        <!-- Category Filter Tabs -->
-        <div class="filter-tabs">
-          <button class="filter-tab active" data-filter="all" data-i18n="coll_tab_all">Tất cả</button>
-          <button class="filter-tab" data-filter="Outerwear" data-i18n="coll_tab_outer">Áo khoác</button>
-          <button class="filter-tab" data-filter="Trousers" data-i18n="coll_tab_trousers">Quần</button>
-          <button class="filter-tab" data-filter="Streetwear" data-i18n="coll_tab_street">Streetwear</button>
-          <button class="filter-tab" data-filter="Footwear" data-i18n="coll_tab_footwear">Giày dép</button>
-          <button class="filter-tab" data-filter="Accessories" data-i18n="coll_tab_acc">Phụ kiện</button>
+        <!-- Dual Smart Filter Bar -->
+        <div class="smart-filter-bar">
+          <!-- Row 1: Target Gender Filter -->
+          <div class="filter-row gender-filter-row">
+            <span class="filter-label" data-i18n="filter_target_label">Dành cho:</span>
+            <div class="filter-options">
+              <button class="filter-btn gender-btn active" data-gender="all" data-i18n="filter_target_all">Tất cả</button>
+              <button class="filter-btn gender-btn" data-gender="Men" data-i18n="filter_target_men">Nam</button>
+              <button class="filter-btn gender-btn" data-gender="Women" data-i18n="filter_target_women">Nữ</button>
+              <button class="filter-btn gender-btn" data-gender="Unisex" data-i18n="filter_target_unisex">Unisex</button>
+            </div>
+          </div>
+          <!-- Row 2: Product Category Filter -->
+          <div class="filter-row category-filter-row">
+            <span class="filter-label" data-i18n="filter_category_label">Danh mục:</span>
+            <div class="filter-options">
+              <button class="filter-btn category-btn active" data-category="all" data-i18n="coll_tab_all">Tất cả</button>
+              <button class="filter-btn category-btn" data-category="Outerwear" data-i18n="coll_tab_outer">Áo</button>
+              <button class="filter-btn category-btn" data-category="Trousers" data-i18n="coll_tab_trousers">Quần</button>
+              <button class="filter-btn category-btn" data-category="Footwear" data-i18n="coll_tab_footwear">Giày</button>
+              <button class="filter-btn category-btn" data-category="Accessories" data-i18n="coll_tab_acc">Phụ kiện</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -333,11 +348,10 @@
         <div class="footer-col">
           <h4 data-i18n="foot_coll_title">Bộ Sưu Tập</h4>
           <div class="footer-links">
-            <a href="#" class="footer-link" data-filter="Outerwear" data-i18n="foot_links_outer">Áo khoác nam nữ</a>
+            <a href="#" class="footer-link" data-filter="Outerwear" data-i18n="foot_links_outer">Áo thời trang</a>
             <a href="#" class="footer-link" data-filter="Trousers" data-i18n="foot_links_trousers">Quần thiết kế</a>
-            <a href="#" class="footer-link" data-filter="Streetwear" data-i18n="foot_links_street">Streetwear độc
-              bản</a>
-            <a href="#" class="footer-link" data-filter="Footwear" data-i18n="foot_links_footwear">Giày da cao cấp</a>
+            <a href="#" class="footer-link" data-filter="Footwear" data-i18n="foot_links_footwear">Giày cao cấp</a>
+            <a href="#" class="footer-link" data-filter="Accessories" data-i18n="foot_links_acc">Phụ kiện thời thượng</a>
           </div>
         </div>
 
