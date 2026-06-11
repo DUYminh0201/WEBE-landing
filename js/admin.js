@@ -501,6 +501,8 @@ document.addEventListener('DOMContentLoaded', () => {
           if (prodCategoryInput) prodCategoryInput.value = parts[0];
           if (prodGenderInput) prodGenderInput.value = parts[1];
         }
+        renderColorStockConfig();
+        updateAdminTotalStock();
       }
     });
   }
@@ -805,10 +807,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalStock = 0;
 
     const colorsToSave = selectedColors.length > 0 ? selectedColors : ['default'];
+    const smartCategoryVal = prodSmartCategoryInput ? prodSmartCategoryInput.value : '';
+    const sizesList = getSizesListByCategory(smartCategoryVal);
 
     colorsToSave.forEach(color => {
       sizeStocks[color] = {};
-      ['XS', 'S', 'M', 'L', 'XL', 'XXL'].forEach(size => {
+      sizesList.forEach(size => {
         const input = document.querySelector(`.size-stock-field[data-color="${color}"][data-size="${size}"]`);
         if (input && input.value !== '') {
           const qty = parseInt(input.value) || 0;
@@ -1386,6 +1390,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (prodStockInput) prodStockInput.value = total;
   }
 
+  // Helper to determine sizes by category
+  function getSizesListByCategory(smartCategoryVal) {
+    if (!smartCategoryVal) return ['S', 'M', 'L', 'XL', '2XL', '3XL'];
+    if (smartCategoryVal.startsWith('Footwear')) {
+      return ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45'];
+    } else if (smartCategoryVal.startsWith('Accessories')) {
+      return ['Free Size'];
+    } else {
+      return ['S', 'M', 'L', 'XL', '2XL', '3XL'];
+    }
+  }
+
   function renderColorStockConfig(existingSizeStocks = null) {
     if (!colorStockContainer) return;
     
@@ -1401,7 +1417,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     colorStockContainer.innerHTML = '';
     
-    const sizesList = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const smartCategoryVal = prodSmartCategoryInput ? prodSmartCategoryInput.value : '';
+    const sizesList = getSizesListByCategory(smartCategoryVal);
 
     // If no colors are configured, show a "default" block
     const colorsToRender = selectedColors.length > 0 ? selectedColors : ['default'];
