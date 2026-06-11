@@ -359,7 +359,8 @@ const db = {
 
   loginAdmin(username, password) {
     if (window.firebaseEnabled) {
-      const pass = dbCaches.settings.adminPassword || 'admin123';
+      const localAdmin = JSON.parse(localStorage.getItem(DB_ADMIN_KEY)) || DEFAULT_ADMIN;
+      const pass = dbCaches.settings.adminPassword || localAdmin.password || 'admin123';
       if (username.trim() === 'admin' && password === pass) {
         sessionStorage.setItem('admin_session', 'active');
         return true;
@@ -383,20 +384,20 @@ const db = {
   },
 
   changeAdminPassword(newPassword) {
+    // Always update local storage
+    const adminCredentials = JSON.parse(localStorage.getItem(DB_ADMIN_KEY)) || DEFAULT_ADMIN;
+    adminCredentials.password = newPassword;
+    localStorage.setItem(DB_ADMIN_KEY, JSON.stringify(adminCredentials));
+
     if (window.firebaseEnabled) {
       window.firebaseDb.collection('settings').doc('global').set({
         adminPassword: newPassword
       }, { merge: true })
         .catch(error => {
           console.error("Failed to change password in Firestore:", error);
-          document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi đổi mật khẩu: " + error.message } }));
+          document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi đổi mật khẩu trên Cloud: " + error.message } }));
         });
-      return true;
     }
-
-    const adminCredentials = JSON.parse(localStorage.getItem(DB_ADMIN_KEY)) || DEFAULT_ADMIN;
-    adminCredentials.password = newPassword;
-    localStorage.setItem(DB_ADMIN_KEY, JSON.stringify(adminCredentials));
     return true;
   },
 
@@ -482,24 +483,24 @@ const db = {
 
   getGoogleSheetsUrl() {
     if (window.firebaseEnabled) {
-      return dbCaches.settings.googleSheetsUrl || '';
+      return dbCaches.settings.googleSheetsUrl || localStorage.getItem('fashion_store_google_sheets_url') || '';
     }
     return localStorage.getItem('fashion_store_google_sheets_url') || '';
   },
 
   saveGoogleSheetsUrl(url) {
+    // Always save to localStorage as fallback
+    localStorage.setItem('fashion_store_google_sheets_url', url.trim());
+
     if (window.firebaseEnabled) {
       window.firebaseDb.collection('settings').doc('global').set({
         googleSheetsUrl: url.trim()
       }, { merge: true })
         .catch(error => {
           console.error("Failed to save Google Sheets URL to Firestore:", error);
-          document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi lưu cấu hình Google Sheets: " + error.message } }));
+          document.dispatchEvent(new CustomEvent('db-error', { detail: { message: "Lỗi lưu cấu hình Google Sheets trên Cloud: " + error.message } }));
         });
-      return true;
     }
-
-    localStorage.setItem('fashion_store_google_sheets_url', url.trim());
     return true;
   }
 };
